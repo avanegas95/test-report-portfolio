@@ -55,13 +55,11 @@ test.describe("expandable test case rows", () => {
     await toggle.press("Enter");
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
 
-    for (let step = 0; step < 40; step += 1) {
-      await page.keyboard.press("Tab");
-      const focused = await toggle.evaluate(
-        (element) => element === document.activeElement,
-      );
-      if (focused) break;
-    }
+    // Step off and back on with the keyboard so :focus-visible applies in
+    // every engine (Firefox keeps mouse-focus modality after the click above).
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.press("Tab");
+    await expect(toggle).toBeFocused();
 
     const outlineWidth = await toggle.evaluate((element) => {
       return window.getComputedStyle(element).outlineWidth;
