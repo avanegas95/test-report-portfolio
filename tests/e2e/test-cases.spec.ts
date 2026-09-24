@@ -39,7 +39,6 @@ test.describe("expandable test case rows", () => {
 
   test("Enter and Space toggle a row; keyboard focus shows a visible outline", async ({
     page,
-    browserName,
   }) => {
     await page.goto("/#suites");
 
@@ -56,12 +55,8 @@ test.describe("expandable test case rows", () => {
     await toggle.press("Enter");
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
 
-    // Step off and back on with the keyboard so :focus-visible applies in
-    // every engine (Firefox keeps mouse-focus modality after the click above).
-    // WebKit follows macOS: plain Tab skips buttons unless Option is held.
-    const tab = browserName === "webkit" ? "Alt+Tab" : "Tab";
-    await page.keyboard.press(`Shift+${tab}`);
-    await page.keyboard.press(tab);
+    // The Space/Enter presses above focused the row from the keyboard, so
+    // :focus-visible applies in every engine without tabbing around.
     await expect(toggle).toBeFocused();
 
     const outlineWidth = await toggle.evaluate((element) => {
