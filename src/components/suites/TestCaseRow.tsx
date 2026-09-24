@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useId,
-  useState,
-  type KeyboardEvent,
-  type ReactNode,
-} from "react";
+import { useCallback, useId, useState, type ReactNode } from "react";
 import {
   statusBgClass,
   statusDotClass,
@@ -72,16 +66,6 @@ export default function TestCaseRow({
     setIsOpen((open) => !open);
   }, []);
 
-  const onKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLButtonElement>) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        toggle();
-      }
-    },
-    [toggle],
-  );
-
   return (
     <div className="test-case-row border-t border-rule-soft">
       <button
@@ -96,7 +80,6 @@ export default function TestCaseRow({
         aria-controls={panelId}
         aria-describedby={mobileSummaryId}
         onClick={toggle}
-        onKeyDown={onKeyDown}
       >
         <span
           className={`font-mono text-[13px] ${isOpen ? "font-semibold text-info" : "text-muted"}`}

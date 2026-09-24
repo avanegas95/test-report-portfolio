@@ -25,7 +25,7 @@ export function formatDeployTime(iso: string): { time: string; zone: string } {
   const time = date.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false,
+    hourCycle: "h23",
     timeZone: "America/New_York",
   });
   const zone =
@@ -53,7 +53,7 @@ export function formatReportUpdated(iso: string): string {
   const timePart = date.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false,
+    hourCycle: "h23",
     timeZone: "America/New_York",
   });
   const zone =
@@ -99,7 +99,7 @@ export function formatGenerated(buildTime: Date): string {
   const timePart = buildTime.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false,
+    hourCycle: "h23",
     timeZone: TIME_ZONE,
   });
   return `${datePart} ${timePart} ${getNewYorkTimeZoneName(buildTime)}`;

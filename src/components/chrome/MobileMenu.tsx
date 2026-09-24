@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-  type KeyboardEvent,
-} from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 interface SectionLink {
   id: string;
@@ -84,13 +77,6 @@ export default function MobileMenu({ sections }: MobileMenuProps) {
     return () => document.removeEventListener("keydown", onDocumentKeyDown);
   }, [closeMenu, isOpen]);
 
-  const onMenuKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      setIsOpen((open) => !open);
-    }
-  };
-
   return (
     <div className="relative flex items-center gap-3 md:hidden">
       <span
@@ -109,7 +95,6 @@ export default function MobileMenu({ sections }: MobileMenuProps) {
         aria-expanded={isOpen}
         aria-controls={panelId}
         onClick={() => setIsOpen((open) => !open)}
-        onKeyDown={onMenuKeyDown}
       >
         <svg
           className="size-5"
@@ -149,7 +134,7 @@ export default function MobileMenu({ sections }: MobileMenuProps) {
                   className="flex items-center gap-2 px-4 py-3 text-sm text-text-2 no-underline hover:bg-paper-alt hover:text-ink"
                   onClick={closeMenu}
                 >
-                  <span className="font-mono text-faint">{section.number}</span>
+                  <span className="font-mono text-muted">{section.number}</span>
                   {section.label}
                 </a>
               </li>

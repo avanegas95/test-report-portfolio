@@ -11,7 +11,15 @@ export default defineConfig({
   reporter: process.env.CI
     ? [
         ["list"],
-        ["json", { outputFile: "reports/playwright.json" }],
+        [
+          "json",
+          {
+            // The a11y and Build B runs write elsewhere so they don't clobber
+            // the e2e results that collect-report.mjs reads.
+            outputFile:
+              process.env.PLAYWRIGHT_JSON_OUTPUT ?? "reports/playwright.json",
+          },
+        ],
         ["html", { open: "never", outputFolder: "playwright-report" }],
       ]
     : [["list"], ["html", { open: "never" }]],

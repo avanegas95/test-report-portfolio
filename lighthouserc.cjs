@@ -5,7 +5,6 @@ module.exports = {
       url: ["http://localhost:4321/"],
       numberOfRuns: 3,
       settings: {
-        emulatedFormFactor: "mobile",
         chromeFlags: "--no-sandbox --disable-dev-shm-usage",
       },
     },

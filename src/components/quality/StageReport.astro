@@ -1,6 +1,6 @@
 ---
 import Icon from "@components/primitives/Icon.astro";
-import type { Status } from "@/lib/status";
+import { statusDotClass, statusTextClass, type Status } from "@/lib/status";
 import { formatDuration } from "@/lib/format";
 
 interface Stage {
@@ -49,10 +49,35 @@ const totalCount = stages.length;
               : "—";
 
         return (
-          <li class="flex flex-col gap-2 rounded-md border border-pass-surface-border bg-pass-surface p-3">
-            <span class="flex items-center gap-1.5 text-sm font-medium text-pass">
-              <Icon name="check" class="size-3.5 shrink-0" />
+          <li
+            class:list={[
+              "flex flex-col gap-2 rounded-md border p-3",
+              stage.status === "pass"
+                ? "border-pass-surface-border bg-pass-surface"
+                : "border-rule bg-paper",
+            ]}
+          >
+            <span
+              class:list={[
+                "flex items-center gap-1.5 text-sm font-medium",
+                statusTextClass(stage.status),
+              ]}
+            >
+              {stage.status === "pass" ? (
+                <Icon name="check" class="size-3.5 shrink-0" />
+              ) : (
+                <span
+                  class:list={[
+                    "size-1.5 shrink-0 rounded-full",
+                    statusDotClass(stage.status),
+                  ]}
+                  aria-hidden="true"
+                />
+              )}
               {stage.name}
+              {stage.status !== "pass" && (
+                <span class="sr-only"> ({stage.status})</span>
+              )}
             </span>
             <span class="font-mono text-xs text-text-2">{durationLabel}</span>
           </li>

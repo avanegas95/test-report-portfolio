@@ -185,7 +185,11 @@ function remoteBranchExists(branch) {
 }
 
 function checkoutHistoryBranch() {
-  run("git", ["fetch", "origin", HISTORY_BRANCH], { stdio: "pipe" });
+  try {
+    run("git", ["fetch", "origin", HISTORY_BRANCH], { stdio: "pipe" });
+  } catch {
+    // First run: the history branch does not exist on the remote yet.
+  }
 
   if (remoteBranchExists(HISTORY_BRANCH)) {
     run("git", ["checkout", HISTORY_BRANCH]);

@@ -18,7 +18,7 @@ const { lines } = Astro.props;
   {
     lines.map((entry) => {
       if ("cmd" in entry) {
-        return <div class="text-faint">{entry.cmd}</div>;
+        return <div class="text-muted">{entry.cmd}</div>;
       }
       return (
         <div class="flex justify-between gap-4">

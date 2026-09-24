@@ -33,6 +33,10 @@ async function expectNoViolations(page: import("@playwright/test").Page) {
   expect(results.violations).toEqual([]);
 }
 
+// Run in one worker so afterAll sees every scanned state; otherwise each
+// parallel worker writes its own partial reports/axe.json.
+test.describe.configure({ mode: "default" });
+
 test.afterAll(() => {
   mkdirSync("reports", { recursive: true });
   writeFileSync("reports/axe.json", `${JSON.stringify(axeReport, null, 2)}\n`);

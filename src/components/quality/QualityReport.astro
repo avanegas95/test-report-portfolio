@@ -44,7 +44,7 @@ const browserSummary = Object.entries(latest.playwright.byBrowser ?? {})
     <QualityTile
       title="Lighthouse"
       status={lighthousePass ? "pass" : "fail"}
-      statusLabel={`PASS · BUDGET ≥ ${budgets.lighthouseMin}`}
+      statusLabel={`${lighthousePass ? "PASS" : "FAIL"} · BUDGET ≥ ${budgets.lighthouseMin}`}
       class="lg:col-span-2"
     >
       <span slot="title">

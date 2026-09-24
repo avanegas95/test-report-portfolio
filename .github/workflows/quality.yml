@@ -12,8 +12,10 @@ concurrency:
   group: quality-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# `permissions` does not accept expressions. Write is needed on main to push
+# the quality-history branch; fork PRs get a read-only token regardless.
 permissions:
-  contents: ${{ github.event_name == 'pull_request' && 'read' || 'write' }}
+  contents: write
 
 env:
   PLAYWRIGHT_VERSION: "1.51.1"
@@ -67,6 +69,11 @@ jobs:
           BUILD_TIME: ${{ env.BUILD_TIME }}
           QUALITY_REPORT: .quality/current.json
 
+      # `vercel build` re-runs `astro build` into dist/, so keep a copy of
+      # Build A for the equivalence check.
+      - name: Snapshot Build A
+        run: rm -rf dist-a && cp -R dist dist-a
+
       - name: Serve A
         run: |
           npx sirv dist --port 4321 --brotli --gzip --single > reports/serve-a.log 2>&1 &
@@ -96,12 +103,13 @@ jobs:
         env:
           BUILD_TIME: ${{ env.BUILD_TIME }}
           CI: "true"
+          PLAYWRIGHT_JSON_OUTPUT: reports/playwright-a11y.json
           REUSE_EXISTING_SERVER: "1"
 
       - name: Lighthouse
         continue-on-error: true
         run: |
-          export CHROME_PATH="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          export CHROME_PATH="$(node -e "console.log(require('@playwright/test').chromium.executablePath())")"
           bash scripts/ci/stage.sh Lighthouse -- npx lhci collect --config=lighthouserc.cjs
 
       - name: Collect and validate report
@@ -127,15 +135,20 @@ jobs:
 
       - name: Pull Vercel settings
         if: steps.collect.outputs.gate_status != 'fail'
-        run: npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+        run: npx --yes vercel pull --yes --environment="$VERCEL_ENVIRONMENT" --token="$VERCEL_TOKEN"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ENVIRONMENT: ${{ github.event_name == 'pull_request' && 'preview' || 'production' }}
 
       - name: Build B
         if: steps.collect.outputs.gate_status != 'fail'
-        run: bash scripts/ci/stage.sh Build -- npx vercel build --prod --token="$VERCEL_TOKEN"
+        run: |
+          # Prebuilt output must match the deploy target (preview for PRs).
+          PROD_FLAG=""
+          if [ "${{ github.event_name }}" != "pull_request" ]; then PROD_FLAG="--prod"; fi
+          bash scripts/ci/stage.sh Build -- npx --yes vercel build $PROD_FLAG --token="$VERCEL_TOKEN"
         env:
           BUILD_TIME: ${{ env.BUILD_TIME }}
           DEPLOY_ENV: production
@@ -171,6 +184,7 @@ jobs:
           BUILD_TIME: ${{ env.BUILD_TIME }}
           CI: "true"
           PLAYWRIGHT_BASE_URL: http://localhost:4322
+          PLAYWRIGHT_JSON_OUTPUT: reports/playwright-a11y-b.json
           QUALITY_REPORT: reports/quality-report.json
           REUSE_EXISTING_SERVER: "1"
 
@@ -181,6 +195,7 @@ jobs:
           BUILD_TIME: ${{ env.BUILD_TIME }}
           CI: "true"
           PLAYWRIGHT_BASE_URL: http://localhost:4322
+          PLAYWRIGHT_JSON_OUTPUT: reports/playwright-quality-b.json
           QUALITY_REPORT: reports/quality-report.json
           REUSE_EXISTING_SERVER: "1"
 
@@ -198,9 +213,9 @@ jobs:
           github.event.pull_request.head.repo.full_name == github.repository)
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            bash scripts/ci/stage.sh Deploy -- npx vercel deploy --prebuilt --token="$VERCEL_TOKEN"
+            bash scripts/ci/stage.sh Deploy -- npx --yes vercel deploy --prebuilt --token="$VERCEL_TOKEN"
           else
-            bash scripts/ci/stage.sh Deploy -- npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+            bash scripts/ci/stage.sh Deploy -- npx --yes vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
           fi
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
