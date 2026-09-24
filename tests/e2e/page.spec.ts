@@ -16,7 +16,9 @@ test("five sections render in order with eyebrows and page landmarks exist", asy
   await page.goto("/");
 
   await expect(page.locator("header")).toBeVisible();
-  await expect(page.locator("nav")).toBeVisible();
+  await expect(
+    page.getByRole("navigation", { name: "Report sections" }),
+  ).toBeVisible();
   await expect(page.locator("main#main")).toBeVisible();
   await expect(page.locator("footer")).toBeVisible();
 

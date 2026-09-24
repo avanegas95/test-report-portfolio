@@ -20,8 +20,6 @@ permissions:
 env:
   PLAYWRIGHT_VERSION: "1.51.1"
   NODE_VERSION: "22"
-  BUILD_TIME: ${{ github.run_started_at }}
-  PIPELINE_START: ${{ github.run_started_at }}
 
 jobs:
   quality:
@@ -33,6 +31,14 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.51.1-noble
 
     steps:
+      # One timestamp for the whole run so Build A and Build B render the
+      # same "Generated" time. (There is no github.run_started_at context.)
+      - name: Set build time
+        run: |
+          now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "BUILD_TIME=$now" >> "$GITHUB_ENV"
+          echo "PIPELINE_START=$now" >> "$GITHUB_ENV"
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
