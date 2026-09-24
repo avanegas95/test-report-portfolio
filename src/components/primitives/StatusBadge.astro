@@ -1,0 +1,83 @@
+---
+import Icon from "./Icon.astro";
+
+export type Status = "pass" | "warn" | "fail" | "info" | "neutral";
+
+interface Props {
+  status: Status;
+  label?: string;
+  size?: "sm" | "lg";
+  icon?: "check";
+  class?: string;
+}
+
+const { status, label, size = "sm", icon, class: className = "" } = Astro.props;
+
+const defaultLabels: Record<Status, string> = {
+  pass: "PASS",
+  warn: "WARN",
+  fail: "FAIL",
+  info: "INFO",
+  neutral: "NEUTRAL",
+};
+
+const text = label ?? defaultLabels[status];
+const showCheck = size === "lg" && (icon === "check" || status === "pass");
+
+const tone: Record<Status, { badge: string; dot: string }> = {
+  pass: {
+    badge: "bg-pass-bg text-pass border-pass-border",
+    dot: "bg-pass-dot",
+  },
+  warn: {
+    badge: "bg-warn-bg text-warn border-warn-border",
+    dot: "bg-warn-dot",
+  },
+  fail: {
+    badge: "bg-fail-bg text-fail",
+    dot: "bg-fail-dot",
+  },
+  info: {
+    badge: "bg-info-bg text-info",
+    dot: "bg-info-dot",
+  },
+  neutral: {
+    badge: "bg-chip-neutral text-ink",
+    dot: "bg-faint",
+  },
+};
+
+const sizeClasses =
+  size === "lg"
+    ? "gap-2.5 px-4 py-2 pl-3 text-sm border"
+    : "gap-1.5 px-[9px] py-[3px] text-badge";
+---
+
+<span
+  class:list={[
+    "inline-flex items-center rounded-full font-mono font-semibold uppercase tracking-badge",
+    tone[status].badge,
+    sizeClasses,
+    className,
+  ]}
+>
+  {
+    showCheck ? (
+      <span
+        class:list={[
+          "inline-flex shrink-0 items-center justify-center rounded-full bg-pass-dot text-white",
+          size === "lg" ? "size-5" : "size-3.5",
+        ]}
+        aria-hidden="true"
+      >
+        <Icon name="check" class={size === "lg" ? "size-3" : "size-2.5"} />
+      </span>
+    ) : (
+      <span
+        class:list={["size-1.5 shrink-0 rounded-full", tone[status].dot]}
+        aria-hidden="true"
+      />
+    )
+  }
+  {text}
+</span>

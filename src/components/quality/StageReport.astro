@@ -1,0 +1,63 @@
+---
+import Icon from "@components/primitives/Icon.astro";
+import type { Status } from "@/lib/status";
+import { formatDuration } from "@/lib/format";
+
+interface Stage {
+  name: string;
+  status: Status;
+  durationSeconds: number | null;
+}
+
+interface Props {
+  stages: Stage[];
+  runNumber: number;
+}
+
+const { stages, runNumber } = Astro.props;
+
+const greenCount = stages.filter((s) => s.status === "pass").length;
+const totalCount = stages.length;
+---
+
+<div
+  class="flex flex-col gap-5 rounded-xl border border-rule bg-paper p-6 md:p-7"
+>
+  <div class="flex items-center justify-between gap-4">
+    <span class="text-[15px] font-semibold text-ink">
+      Stage report
+      <span class="font-mono text-xs font-normal text-muted">
+        · run #{runNumber}
+      </span>
+    </span>
+    <span class="font-mono text-xs text-muted">
+      {greenCount}/{totalCount} stages green
+    </span>
+  </div>
+
+  <ol
+    class="grid list-none grid-cols-1 gap-2 p-0 sm:grid-cols-2 lg:grid-cols-7"
+  >
+    {
+      stages.map((stage) => {
+        const isDeploy = stage.name === "Deploy";
+        const durationLabel =
+          isDeploy && stage.durationSeconds === null
+            ? "live"
+            : stage.durationSeconds !== null
+              ? formatDuration(stage.durationSeconds)
+              : "—";
+
+        return (
+          <li class="flex flex-col gap-2 rounded-md border border-pass-surface-border bg-pass-surface p-3">
+            <span class="flex items-center gap-1.5 text-sm font-medium text-pass">
+              <Icon name="check" class="size-3.5 shrink-0" />
+              {stage.name}
+            </span>
+            <span class="font-mono text-xs text-text-2">{durationLabel}</span>
+          </li>
+        );
+      })
+    }
+  </ol>
+</div>

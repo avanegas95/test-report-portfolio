@@ -1,0 +1,157 @@
+/* Tailwind v4 theme for "The Test Report". Import after `@import "tailwindcss";`
+   Mirrors tokens.json. Color is semantic only: pass / warn / fail / info. */
+
+@theme {
+  /* Neutrals */
+  --color-ink: #14161a;
+  --color-text-2: #4a5160;
+  --color-text-3: #2b3038;
+  --color-muted: #636b78; /* min for readable small text; do not lighten */
+  --color-faint: #8a919c; /* decorative / large text only */
+  --color-rule: #e3e5e9;
+  --color-rule-soft: #edeef1;
+  --color-border-control: #d5d8de;
+  --color-paper: #ffffff;
+  --color-paper-alt: #fafaf8;
+  --color-chip-neutral: #f0f1f3;
+
+  /* Status: pass */
+  --color-pass: #17693f;
+  --color-pass-bg: #e6f4ec;
+  --color-pass-border: #bfe3cd;
+  --color-pass-dot: #1f8a52;
+  --color-pass-surface: #f3faf6;
+  --color-pass-surface-border: #d5eddf;
+
+  /* Status: warn */
+  --color-warn: #8a5300;
+  --color-warn-bg: #fdf2db;
+  --color-warn-border: #f3ddaf;
+  --color-warn-dot: #d98a00;
+  --color-warn-surface: #fffbf2;
+
+  /* Status: fail */
+  --color-fail: #b42318;
+  --color-fail-bg: #fdecea;
+  --color-fail-dot: #d92d20;
+
+  /* Status: info */
+  --color-info: #1f55b8;
+  --color-info-bg: #e8effc;
+  --color-info-dot: #2f6bd8;
+  --color-info-surface: #f5f8fe;
+  --color-info-surface-border: #dce5f5;
+  --color-link-hover: #153e87;
+
+  /* Type */
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --tracking-eyebrow: 0.1em;
+  --tracking-label: 0.08em;
+  --tracking-badge: 0.06em;
+
+  /* Type scale — mobile (-m) and desktop; use text-h1-m md:text-h1 */
+  --text-h1-m: 2.375rem;
+  --text-h1-m--line-height: 1.06;
+  --text-h1-m--font-weight: 600;
+  --text-h1-m--letter-spacing: -0.025em;
+
+  --text-h1: 4rem;
+  --text-h1--line-height: 1.04;
+  --text-h1--font-weight: 600;
+  --text-h1--letter-spacing: -0.025em;
+
+  --text-verdict-m: 1.4375rem;
+  --text-verdict-m--line-height: 1.3;
+  --text-verdict-m--font-weight: 500;
+  --text-verdict-m--letter-spacing: -0.01em;
+
+  --text-verdict: 1.875rem;
+  --text-verdict--line-height: 1.3;
+  --text-verdict--font-weight: 500;
+  --text-verdict--letter-spacing: -0.01em;
+
+  --text-h2-m: 1.875rem;
+  --text-h2-m--line-height: 1.12;
+  --text-h2-m--font-weight: 600;
+  --text-h2-m--letter-spacing: -0.02em;
+
+  --text-h2: 2.5rem;
+  --text-h2--line-height: 1.1;
+  --text-h2--font-weight: 600;
+  --text-h2--letter-spacing: -0.02em;
+
+  --text-h2-signoff: 3rem;
+  --text-h2-signoff--line-height: 1.08;
+  --text-h2-signoff--font-weight: 600;
+
+  --text-h3: 1.375rem;
+  --text-h3--font-weight: 600;
+
+  --text-lede: 1.0625rem;
+  --text-lede--line-height: 1.6;
+
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.6;
+
+  --text-row-title-m: 0.9375rem;
+  --text-row-title-m--font-weight: 500;
+
+  --text-row-title: 1rem;
+  --text-row-title--font-weight: 500;
+
+  --text-metric-xl-m: 2.125rem;
+  --text-metric-xl-m--font-family: var(--font-mono);
+  --text-metric-xl-m--font-weight: 500;
+
+  --text-metric-xl: 2.75rem;
+  --text-metric-xl--font-family: var(--font-mono);
+  --text-metric-xl--font-weight: 500;
+
+  --text-metric-tile: 3rem;
+  --text-metric-tile--font-family: var(--font-mono);
+  --text-metric-tile--font-weight: 500;
+
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--font-family: var(--font-mono);
+  --text-eyebrow--letter-spacing: 0.1em;
+
+  --text-label: 0.6875rem;
+  --text-label--font-family: var(--font-mono);
+  --text-label--letter-spacing: 0.08em;
+
+  --text-badge: 0.6875rem;
+  --text-badge--font-family: var(--font-mono);
+  --text-badge--font-weight: 600;
+  --text-badge--letter-spacing: 0.06em;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+
+  /* Layout */
+  --container-report: 1120px;
+
+  /* Lighthouse thresholds (code-side copy; pass raised to 95 per §9 D7) */
+  --lighthouse-threshold-pass: 95;
+  --lighthouse-threshold-warn: 50;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background: var(--color-paper);
+  }
+
+  a {
+    color: var(--color-info);
+  }
+
+  a:hover {
+    color: var(--color-link-hover);
+  }
+}

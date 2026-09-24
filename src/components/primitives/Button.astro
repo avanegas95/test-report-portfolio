@@ -1,0 +1,44 @@
+---
+import Icon from "./Icon.astro";
+
+export type ButtonVariant = "primary" | "secondary";
+
+interface Props {
+  href: string;
+  variant?: ButtonVariant;
+  showArrow?: boolean;
+  icon?: "arrow" | "arrow-right" | "download";
+  download?: boolean | string;
+  class?: string;
+}
+
+const {
+  href,
+  variant = "primary",
+  showArrow = false,
+  icon,
+  download,
+  class: className = "",
+} = Astro.props;
+
+const trailingIcon = icon ?? (showArrow ? ("arrow-right" as const) : undefined);
+
+const variantClasses: Record<ButtonVariant, string> = {
+  primary: "border border-ink bg-ink text-paper hover:bg-ink hover:text-paper",
+  secondary:
+    "border border-border-control bg-paper text-ink hover:border-ink hover:text-ink",
+};
+---
+
+<a
+  href={href}
+  download={download === true ? "" : download || undefined}
+  class:list={[
+    "inline-flex h-12 items-center justify-center gap-2 rounded-md px-[22px] text-[15px] font-medium no-underline transition-colors",
+    variantClasses[variant],
+    className,
+  ]}
+>
+  <slot />
+  {trailingIcon && <Icon name={trailingIcon} class="size-4" />}
+</a>

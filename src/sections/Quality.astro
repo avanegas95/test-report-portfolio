@@ -1,0 +1,78 @@
+---
+import Container from "@components/primitives/Container.astro";
+import Section from "@components/primitives/Section.astro";
+import SectionHeader from "@components/report/SectionHeader.astro";
+import StatusBadge from "@components/primitives/StatusBadge.astro";
+import SampleDataNotice from "@components/quality/SampleDataNotice.astro";
+import QualityReport from "@components/quality/QualityReport.astro";
+import { formatReportUpdated } from "@/lib/format";
+import qualityReportData from "@/data/quality-report.sample.json";
+import type { Status } from "@/lib/status";
+
+const qualityReport = {
+  ...qualityReportData,
+  latest: {
+    ...qualityReportData.latest,
+    status: qualityReportData.latest.status as Status,
+    stages: qualityReportData.latest.stages.map((stage) => ({
+      ...stage,
+      status: stage.status as Status,
+    })),
+  },
+  runs: qualityReportData.runs.map((run) => ({
+    ...run,
+    status: run.status as Status,
+  })),
+};
+
+interface Props {
+  section: {
+    eyebrow: string;
+    title: string;
+    lede: string;
+  };
+}
+
+const { section } = Astro.props;
+const updatedLabel = formatReportUpdated(qualityReport.generatedAt);
+---
+
+<Section
+  id="quality"
+  tone="alt"
+  aria-labelledby="quality-heading"
+  data-quality-region
+>
+  <Container class="flex flex-col gap-10 py-14 md:py-24">
+    <SectionHeader
+      eyebrow={section.eyebrow}
+      title={section.title}
+      lede={section.lede}
+      headingId="quality-heading"
+    >
+      <div slot="aside" class="flex flex-col items-start gap-3 sm:items-end">
+        <SampleDataNotice />
+        <div class="flex flex-wrap items-center gap-3">
+          <StatusBadge status="info" label="LIVE" />
+          <span class="font-mono text-xs text-text-2">
+            run #{qualityReport.latest.number} · updated {updatedLabel}
+          </span>
+        </div>
+      </div>
+    </SectionHeader>
+
+    <QualityReport
+      report={{
+        ...qualityReport,
+        latest: {
+          ...qualityReport.latest,
+          status: qualityReport.latest.status as import("@/lib/status").Status,
+        },
+        runs: qualityReport.runs.map((run) => ({
+          ...run,
+          status: run.status as import("@/lib/status").Status,
+        })),
+      }}
+    />
+  </Container>
+</Section>

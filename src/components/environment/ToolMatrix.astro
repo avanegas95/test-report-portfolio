@@ -1,0 +1,58 @@
+---
+interface ToolGroup {
+  group: string;
+  items: string[];
+}
+
+interface TestBeds {
+  group: string;
+  items: string[];
+}
+
+interface Props {
+  groups: ToolGroup[];
+  testBeds: TestBeds;
+}
+
+const { groups, testBeds } = Astro.props;
+---
+
+<div class="flex flex-col">
+  {
+    groups.map((group, index) => (
+      <div
+        class:list={[
+          "grid gap-4 py-4 md:grid-cols-[200px_minmax(0,1fr)] md:items-center md:gap-6 md:py-[18px]",
+          index === 0 ? "border-t border-ink" : "border-t border-rule",
+        ]}
+      >
+        <span class="font-mono text-xs tracking-label text-muted uppercase">
+          {group.group}
+        </span>
+        <div class="flex flex-wrap gap-2">
+          {group.items.map((item) => (
+            <span class="inline-flex rounded-sm border border-rule px-3 py-1.5 font-mono text-sm text-ink">
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+    ))
+  }
+  <div
+    class="grid gap-4 border-y border-rule py-4 md:grid-cols-[200px_minmax(0,1fr)] md:items-center md:gap-6 md:py-[18px]"
+  >
+    <span class="font-mono text-xs tracking-label text-muted uppercase">
+      {testBeds.group}
+    </span>
+    <div class="flex flex-wrap gap-2">
+      {
+        testBeds.items.map((item) => (
+          <span class="inline-flex rounded-sm bg-chip-neutral px-3 py-1.5 font-mono text-sm text-ink">
+            {item}
+          </span>
+        ))
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+---
+import StatusBadge from "@components/primitives/StatusBadge.astro";
+import type { Status } from "@/lib/status";
+
+interface Props {
+  title: string;
+  status: Status;
+  statusLabel?: string;
+  class?: string;
+}
+
+const { title, status, statusLabel, class: className = "" } = Astro.props;
+---
+
+<div
+  class:list={[
+    "flex flex-col gap-4 rounded-xl border border-rule bg-paper p-6 md:p-7",
+    className,
+  ]}
+>
+  <div class="flex items-center justify-between gap-3">
+    <span class="text-[15px] font-semibold text-ink">
+      <slot name="title">{title}</slot>
+    </span>
+    <StatusBadge status={status} label={statusLabel} />
+  </div>
+  <slot />
+</div>

@@ -1,3 +1,40 @@
 @import "tailwindcss";
+@import "./theme.css";
 
 @source "../**/*.{astro,html,js,jsx,ts,tsx,md,mdx}";
+
+@keyframes terminal-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@layer base {
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+}
+
+@layer utilities {
+  .terminal-cursor {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.1em;
+    background: currentColor;
+    vertical-align: text-bottom;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .terminal-cursor {
+      animation: terminal-blink 1s step-end infinite;
+    }
+  }
+}

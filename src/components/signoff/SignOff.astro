@@ -1,0 +1,64 @@
+---
+import Button from "@components/primitives/Button.astro";
+import Approvals from "./Approvals.astro";
+import KnownIssue from "./KnownIssue.astro";
+import type { Status } from "@/lib/status";
+
+interface Contact {
+  email: string;
+  linkedin: string;
+  github: string;
+  resumePdf: string;
+}
+
+interface SignoffContent {
+  approvals: Array<{
+    key: string;
+    value: string;
+    placeholderStyle?: boolean;
+  }>;
+  knownIssue: {
+    id: string;
+    status: Status;
+    label: string;
+    text: string;
+  };
+}
+
+interface Props {
+  signoff: SignoffContent;
+  contact: Contact;
+}
+
+const { signoff, contact } = Astro.props;
+---
+
+<div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-start">
+  <div class="flex flex-col gap-5">
+    <slot />
+    <div class="flex flex-wrap gap-3 pt-2">
+      <Button href={`mailto:${contact.email}`} variant="primary">
+        Email {contact.email}
+      </Button>
+      <Button href={contact.linkedin} variant="secondary"> LinkedIn </Button>
+      <Button href={contact.github} variant="secondary"> GitHub </Button>
+      <a
+        href={contact.resumePdf}
+        download
+        class="inline-flex h-12 items-center justify-center rounded-md border border-border-control bg-paper px-5 text-[15px] font-medium text-ink no-underline transition-colors hover:border-ink hover:text-ink"
+      >
+        Résumé (PDF)
+      </a>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-4">
+    <Approvals approvals={signoff.approvals} />
+    <KnownIssue
+      id={signoff.knownIssue.id}
+      status={signoff.knownIssue.status}
+      label={signoff.knownIssue.label}
+      text={signoff.knownIssue.text}
+    />
+  </div>
+</div>

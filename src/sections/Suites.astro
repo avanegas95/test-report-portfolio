@@ -1,0 +1,48 @@
+---
+import Container from "@components/primitives/Container.astro";
+import Section from "@components/primitives/Section.astro";
+import SectionHeader from "@components/report/SectionHeader.astro";
+import SuiteCard from "@components/suites/SuiteCard.astro";
+import SuiteTotals from "@components/suites/SuiteTotals.astro";
+import type { Suite } from "@/lib/types";
+
+interface Props {
+  section: {
+    eyebrow: string;
+    title: string;
+    lede: string;
+  };
+  suites: Suite[];
+  totals: {
+    total: number;
+    passed: number;
+    failed: number;
+    skipped: number;
+  };
+}
+
+const { section, suites, totals } = Astro.props;
+---
+
+<Section id="suites" tone="alt" aria-labelledby="suites-heading">
+  <Container class="flex flex-col gap-10 py-14 md:py-24">
+    <SectionHeader
+      eyebrow={section.eyebrow}
+      title={section.title}
+      lede={section.lede}
+      headingId="suites-heading"
+    >
+      <SuiteTotals
+        slot="aside"
+        total={totals.total}
+        passed={totals.passed}
+        failed={totals.failed}
+        skipped={totals.skipped}
+      />
+    </SectionHeader>
+
+    <div class="flex flex-col gap-6">
+      {suites.map((suite) => <SuiteCard suite={suite} />)}
+    </div>
+  </Container>
+</Section>

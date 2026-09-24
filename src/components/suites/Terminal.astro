@@ -1,0 +1,41 @@
+---
+import type { Status } from "@/lib/status";
+import { terminalResultClass } from "@/lib/status";
+
+type TerminalLine =
+  { cmd: string } | { line: string; result: string; status: Status };
+
+interface Props {
+  lines: TerminalLine[];
+}
+
+const { lines } = Astro.props;
+---
+
+<div
+  class="rounded-lg border border-info-surface-border bg-paper px-[18px] py-4 font-mono text-xs leading-[1.9] text-text-2"
+>
+  {
+    lines.map((entry) => {
+      if ("cmd" in entry) {
+        return <div class="text-faint">{entry.cmd}</div>;
+      }
+      return (
+        <div class="flex justify-between gap-4">
+          <span>{entry.line}</span>
+          <span
+            class:list={[
+              "shrink-0 font-semibold",
+              terminalResultClass(entry.status),
+            ]}
+          >
+            {entry.result}
+          </span>
+        </div>
+      );
+    })
+  }
+  <div class="text-faint">
+    <span class="terminal-cursor" aria-hidden="true"></span>
+  </div>
+</div>

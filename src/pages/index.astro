@@ -1,23 +1,183 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { Placeholder } from "@components/Placeholder";
+import SkipLink from "@components/chrome/SkipLink.astro";
+import SiteNav from "@components/chrome/SiteNav.astro";
+import Footer from "@components/chrome/Footer.astro";
+import Summary from "@/sections/Summary.astro";
+import Suites from "@/sections/Suites.astro";
+import Environment from "@/sections/Environment.astro";
+import Quality from "@/sections/Quality.astro";
+import SignOff from "@/sections/SignOff.astro";
+import siteContent from "../../docs/handoff/content/site.json";
+import suitesContent from "../../docs/handoff/content/suites.json";
+import { formatPassRate } from "@/lib/format";
+import type { Status } from "@/lib/status";
+import type { Suite } from "@/lib/types";
+
+const VERSION = "v2026.9";
+const REPORT_ID = "AV-2026.9";
+const GENERATED = "2026-09-24 09:00 EDT";
+const ENVIRONMENT = "Boston, MA · UTC−4";
+
+const contact = {
+  email: "avanegas95@gmail.com",
+  linkedin: "https://www.linkedin.com/in/avanegas95/",
+  github: "https://github.com/avanegas95",
+  resumePdf: "/Anderson_Vanegas_Resume.pdf",
+};
+
+const suites: Suite[] = suitesContent.suites.map((suite) => ({
+  ...suite,
+  chip: suite.chip as "info" | "neutral",
+  cases: suite.cases.map((testCase) => {
+    const base = {
+      id: testCase.id,
+      title: testCase.title,
+      area: testCase.area,
+      status: testCase.status as Status,
+      defaultOpen: "defaultOpen" in testCase ? testCase.defaultOpen : undefined,
+    };
+
+    if (!("story" in testCase) || !testCase.story) {
+      return base;
+    }
+
+    const story = testCase.story;
+    return {
+      ...base,
+      story: {
+        precondition: story.precondition,
+        steps: story.steps,
+        expected: story.expected,
+        actual: story.actual,
+        tags: story.tags,
+        terminal: story.terminal?.map((line) => {
+          if ("cmd" in line) return { cmd: line.cmd as string };
+          return {
+            line: line.line,
+            result: line.result,
+            status: line.status as Status,
+          };
+        }),
+      },
+    };
+  }),
+}));
+
+const allCases = suites.flatMap((suite) => suite.cases);
+const passed = allCases.filter((c) => c.status === "pass").length;
+const failed = allCases.filter((c) => c.status === "fail").length;
+const skipped = 0;
+const caseCount = allCases.length;
+const suiteCount = suites.length;
+const toolCount = siteContent.tools.reduce(
+  (sum, group) => sum + group.items.length,
+  0,
+);
+
+const hero = {
+  eyebrow: siteContent.hero.eyebrow,
+  title: siteContent.hero.title,
+  titleSuffix: `— Test Report ${VERSION}`,
+  overallStatus: siteContent.hero.overallStatus as Status,
+  statusLine: `${passed}/${caseCount} cases · 0 critical escapes · 0 open blockers`,
+  verdict: siteContent.hero.verdict,
+  bio: siteContent.hero.bio,
+  ctas: siteContent.hero.ctas.map((cta) => ({
+    label: cta.label,
+    href: cta.href,
+    variant: cta.variant as "primary" | "secondary",
+  })),
+};
+
+const subjectCard = {
+  badge: {
+    status: siteContent.subjectCard.badge.status as Status,
+    label: siteContent.subjectCard.badge.label,
+  },
+  rows: siteContent.subjectCard.rows,
+};
+
+const signoffSection = {
+  eyebrow: siteContent.signoff.eyebrow,
+  title: siteContent.signoff.title,
+  titleSuffix: siteContent.signoff.titleSuffix,
+  lede: siteContent.signoff.lede,
+  approvals: siteContent.signoff.approvals,
+  knownIssue: {
+    ...siteContent.signoff.knownIssue,
+    status: siteContent.signoff.knownIssue.status as Status,
+  },
+};
+
+const metrics = [
+  { value: "6+", label: "Years in QA" },
+  { value: String(suiteCount), label: "Suites executed (companies)" },
+  { value: String(toolCount), label: "Tools in the matrix" },
+  {
+    value: formatPassRate(passed, caseCount),
+    label: "Pass rate (we checked twice)",
+    status: "pass" as const,
+  },
+];
+
+const meta = [
+  { key: "REPORT ID", value: REPORT_ID },
+  { key: "GENERATED", value: GENERATED },
+  { key: "SUBJECT", value: siteContent.report.subject },
+  { key: "ENVIRONMENT", value: ENVIRONMENT },
+];
+
+const testBeds = {
+  group: siteContent.testBeds.group,
+  items: siteContent.testBeds.items,
+};
+
+const footerLeft = siteContent.footer.left.replace(
+  "{year}",
+  String(new Date().getFullYear()),
+);
+
+const navSections = [
+  { id: "summary", number: "01", label: "Summary" },
+  { id: "suites", number: "02", label: "Suites" },
+  { id: "environment", number: "03", label: "Environment" },
+  { id: "quality", number: "04", label: "Quality" },
+  { id: "signoff", number: "05", label: "Sign-off" },
+];
 ---
 
-<BaseLayout title="Anderson Vanegas — The Test Report">
-  <main
-    id="main"
-    class="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16"
-  >
-    <p
-      class="mb-2 font-mono text-xs uppercase tracking-widest text-neutral-500"
-    >
-      M0 scaffold
-    </p>
-    <h1 class="mb-4 text-3xl font-semibold tracking-tight">The Test Report</h1>
-    <p class="mb-8 max-w-prose text-neutral-300">
-      Astro 6, React islands, and Tailwind v4 are wired up. The full report page
-      ships in M1.
-    </p>
-    <Placeholder client:load message="React island ready." />
+<BaseLayout title={`Anderson Vanegas — Test Report ${VERSION}`}>
+  <SkipLink />
+  <SiteNav
+    version={VERSION}
+    sections={navSections}
+    resumePdf={contact.resumePdf}
+  />
+  <main id="main">
+    <Summary
+      hero={hero}
+      subjectCard={subjectCard}
+      metrics={metrics}
+      meta={meta}
+    />
+    <Suites
+      section={siteContent.suitesSection}
+      suites={suites}
+      totals={{
+        total: caseCount,
+        passed,
+        failed,
+        skipped,
+      }}
+    />
+    <Environment
+      section={siteContent.environmentSection}
+      tools={siteContent.tools}
+      testBeds={testBeds}
+    />
+    <Quality section={siteContent.qualitySection} />
+    <SignOff section={signoffSection} contact={contact} />
   </main>
+  <Footer left={footerLeft} right={siteContent.footer.right} />
 </BaseLayout>

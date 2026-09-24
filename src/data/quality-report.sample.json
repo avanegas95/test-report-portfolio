@@ -1,0 +1,94 @@
+{
+  "generatedAt": "2026-09-24T18:32:00Z",
+  "actionsUrl": "https://github.com/avanegas95/test-report-portfolio/actions",
+  "budgets": {
+    "lighthouseMin": 95,
+    "axeMaxViolations": 0,
+    "pipelineMaxSeconds": 180
+  },
+  "latest": {
+    "number": 214,
+    "commit": "3f9c2a1",
+    "message": "feat: expandable test case rows",
+    "branch": "main",
+    "durationSeconds": 112,
+    "durationScope": "to-deploy",
+    "status": "pass",
+    "deployedAt": "2026-09-24T18:32:00Z",
+    "deployTarget": "Vercel",
+    "lighthouse": {
+      "formFactor": "mobile",
+      "runs": 3,
+      "performance": 98,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100
+    },
+    "axe": {
+      "standard": "WCAG 2.2 AA",
+      "violations": 0,
+      "statesScanned": 6
+    },
+    "playwright": {
+      "passed": 48,
+      "failed": 0,
+      "skipped": 0,
+      "total": 48,
+      "byBrowser": { "chromium": 16, "firefox": 16, "webkit": 16 }
+    },
+    "stages": [
+      { "name": "Install", "status": "pass", "durationSeconds": 14 },
+      { "name": "Lint", "status": "pass", "durationSeconds": 6 },
+      { "name": "Build", "status": "pass", "durationSeconds": 11 },
+      { "name": "Playwright", "status": "pass", "durationSeconds": 38 },
+      { "name": "axe", "status": "pass", "durationSeconds": 9 },
+      { "name": "Lighthouse", "status": "pass", "durationSeconds": 22 },
+      { "name": "Deploy", "status": "pass", "durationSeconds": null }
+    ]
+  },
+  "runs": [
+    {
+      "number": 214,
+      "commit": "3f9c2a1",
+      "message": "feat: expandable test case rows",
+      "durationSeconds": 112,
+      "status": "pass",
+      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/214"
+    },
+    {
+      "number": 213,
+      "commit": "a41be07",
+      "message": "fix: darken caption grey to 4.6:1",
+      "durationSeconds": 109,
+      "status": "pass",
+      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/213"
+    },
+    {
+      "number": 212,
+      "commit": "9d0c3f2",
+      "message": "content: add BD-004 story",
+      "note": "axe caught a low-contrast caption. Blocked, fixed in #213.",
+      "durationSeconds": 67,
+      "status": "fail",
+      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/212"
+    },
+    {
+      "number": 211,
+      "commit": "e72a9b4",
+      "message": "perf: lazy-load hero font subset",
+      "note": "Lighthouse perf 93 < 95. Blocked.",
+      "durationSeconds": 115,
+      "status": "fail",
+      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/211"
+    },
+    {
+      "number": 210,
+      "commit": "c81d4e2",
+      "message": "ci: add stage timing collector",
+      "note": "Pipeline 3m 11s, over the 3m budget.",
+      "durationSeconds": 191,
+      "status": "warn",
+      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/210"
+    }
+  ]
+}

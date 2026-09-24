@@ -1,0 +1,50 @@
+---
+import StatusBadge from "@components/primitives/StatusBadge.astro";
+import type { Status } from "@/lib/status";
+
+interface Row {
+  key: string;
+  value: string;
+  note?: string;
+}
+
+interface Props {
+  title: string;
+  badge?: { status: Status; label: string };
+  rows: Row[];
+}
+
+const { title, badge, rows } = Astro.props;
+---
+
+<aside
+  aria-label="Report card"
+  class="overflow-hidden rounded-xl border border-rule"
+>
+  <div
+    class="flex items-center justify-between border-b border-rule bg-paper-alt px-5 py-4"
+  >
+    <span class="font-mono text-xs tracking-label text-muted uppercase"
+      >{title}</span
+    >
+    {badge && <StatusBadge status={badge.status} label={badge.label} />}
+  </div>
+  <dl class="px-5 py-1">
+    {
+      rows.map((row, index) => (
+        <div
+          class:list={[
+            "grid grid-cols-[112px_minmax(0,1fr)] gap-3 py-3.5",
+            index < rows.length - 1 && "border-b border-rule-soft",
+          ]}
+        >
+          <dt class="pt-0.5 font-mono text-xs text-muted">{row.key}</dt>
+          <dd class="text-[15px] text-ink">
+            {row.value}
+            {row.note && <span class="text-muted"> {row.note}</span>}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</aside>

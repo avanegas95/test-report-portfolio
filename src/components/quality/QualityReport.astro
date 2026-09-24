@@ -1,0 +1,178 @@
+---
+import QualityTile from "./QualityTile.astro";
+import ScoreRing from "./ScoreRing.astro";
+import StageReport from "./StageReport.astro";
+import RunsTable from "./RunsTable.astro";
+import {
+  formatDeployDate,
+  formatDeployTime,
+  formatDuration,
+} from "@/lib/format";
+import type { Status } from "@/lib/status";
+
+interface QualityReportData {
+  generatedAt: string;
+  actionsUrl: string;
+  budgets: {
+    lighthouseMin: number;
+    pipelineMaxSeconds: number;
+  };
+  latest: {
+    number: number;
+    commit: string;
+    branch: string;
+    durationSeconds: number;
+    status: Status;
+    deployedAt: string;
+    deployTarget: string;
+    lighthouse: {
+      performance: number;
+      accessibility: number;
+      bestPractices: number;
+      seo: number;
+      runs: number;
+      formFactor: string;
+    };
+    axe: {
+      violations: number;
+      standard: string;
+      statesScanned: number;
+    };
+    playwright: {
+      passed: number;
+      total: number;
+      byBrowser: Record<string, number>;
+    };
+    stages: Array<{
+      name: string;
+      status: Status;
+      durationSeconds: number | null;
+    }>;
+  };
+  runs: Array<{
+    number: number;
+    commit: string;
+    message: string;
+    durationSeconds: number;
+    status: Status;
+    note?: string;
+    url?: string;
+  }>;
+}
+
+interface Props {
+  report: QualityReportData;
+}
+
+const { report } = Astro.props;
+const { latest, budgets } = report;
+const deployTime = formatDeployTime(latest.deployedAt);
+const deployDate = formatDeployDate(latest.deployedAt);
+const pipelineStatus: Status =
+  latest.durationSeconds <= budgets.pipelineMaxSeconds ? "pass" : "warn";
+const lighthousePass = [
+  latest.lighthouse.performance,
+  latest.lighthouse.accessibility,
+  latest.lighthouse.bestPractices,
+  latest.lighthouse.seo,
+].every((score) => score >= budgets.lighthouseMin);
+const browserSummary = Object.entries(latest.playwright.byBrowser)
+  .map(
+    ([browser, count]) =>
+      `${browser[0].toUpperCase()}${browser.slice(1)} ${count}`,
+  )
+  .join(" · ");
+---
+
+<div class="flex flex-col gap-10">
+  <div class="grid gap-5 lg:grid-cols-3">
+    <QualityTile
+      title="Lighthouse"
+      status={lighthousePass ? "pass" : "fail"}
+      statusLabel={`PASS · BUDGET ≥ ${budgets.lighthouseMin}`}
+      class="lg:col-span-2"
+    >
+      <span slot="title">
+        Lighthouse
+        <span class="font-mono text-xs font-normal text-muted">
+          · {latest.lighthouse.formFactor} · median of {latest.lighthouse.runs} runs
+        </span>
+      </span>
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <ScoreRing score={latest.lighthouse.performance} label="Performance" />
+        <ScoreRing
+          score={latest.lighthouse.accessibility}
+          label="Accessibility"
+        />
+        <ScoreRing
+          score={latest.lighthouse.bestPractices}
+          label="Best practices"
+        />
+        <ScoreRing score={latest.lighthouse.seo} label="SEO" />
+      </div>
+    </QualityTile>
+
+    <QualityTile
+      title="Accessibility violations"
+      status={latest.axe.violations === 0 ? "pass" : "fail"}
+    >
+      <span
+        class="font-mono text-[64px] font-medium leading-none tracking-[-0.03em]"
+      >
+        {latest.axe.violations}
+      </span>
+      <span class="font-mono text-xs text-muted">
+        axe-core · {latest.axe.standard} · {latest.axe.statesScanned} states scanned
+      </span>
+    </QualityTile>
+
+    <QualityTile
+      title="Playwright E2E"
+      status={latest.playwright.passed === latest.playwright.total
+        ? "pass"
+        : "fail"}
+    >
+      <div class="flex items-baseline gap-2">
+        <span class="font-mono text-metric-tile leading-none">
+          {latest.playwright.passed}
+        </span>
+        <span class="font-mono text-xl text-muted">
+          / {latest.playwright.total} passed
+        </span>
+      </div>
+      <div class="flex h-2 gap-0.5">
+        {
+          Object.keys(latest.playwright.byBrowser).map(() => (
+            <span class="flex-1 rounded-sm bg-pass-dot" />
+          ))
+        }
+      </div>
+      <span class="font-mono text-xs text-muted">{browserSummary}</span>
+    </QualityTile>
+
+    <QualityTile title="Last deploy" status="info">
+      <div class="flex items-baseline gap-2">
+        <span class="font-mono text-metric-tile leading-none"
+          >{deployTime.time}</span
+        >
+        <span class="font-mono text-xl text-muted">{deployTime.zone}</span>
+      </div>
+      <span class="font-mono text-xs text-muted">
+        {deployDate} · {latest.branch} @ {latest.commit} · {latest.deployTarget}
+      </span>
+    </QualityTile>
+
+    <QualityTile title="Pipeline duration" status={pipelineStatus}>
+      <span class="font-mono text-metric-tile leading-none">
+        {formatDuration(latest.durationSeconds)}
+      </span>
+      <span class="font-mono text-xs text-muted">
+        budget {Math.floor(budgets.pipelineMaxSeconds / 60)}m · faster than the
+        coffee machine
+      </span>
+    </QualityTile>
+  </div>
+
+  <StageReport stages={latest.stages} runNumber={latest.number} />
+  <RunsTable runs={report.runs} actionsUrl={report.actionsUrl} />
+</div>

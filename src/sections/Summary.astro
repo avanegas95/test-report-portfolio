@@ -1,0 +1,112 @@
+---
+import Container from "@components/primitives/Container.astro";
+import Section from "@components/primitives/Section.astro";
+import Eyebrow from "@components/primitives/Eyebrow.astro";
+import StatusBadge from "@components/primitives/StatusBadge.astro";
+import Button from "@components/primitives/Button.astro";
+import ReportMetaStrip from "@components/report/ReportMetaStrip.astro";
+import KeyValueCard from "@components/report/KeyValueCard.astro";
+import MetricTile from "@components/report/MetricTile.astro";
+import type { Status } from "@/lib/status";
+
+interface Props {
+  hero: {
+    eyebrow: string;
+    title: string;
+    titleSuffix: string;
+    overallStatus: Status;
+    statusLine: string;
+    verdict: string;
+    bio: string;
+    ctas: Array<{
+      label: string;
+      href: string;
+      variant: "primary" | "secondary";
+    }>;
+  };
+  subjectCard: {
+    badge: { status: Status; label: string };
+    rows: Array<{ key: string; value: string; note?: string }>;
+  };
+  metrics: Array<{ value: string; label: string; status?: Status }>;
+  meta: Array<{ key: string; value: string }>;
+}
+
+const { hero, subjectCard, metrics, meta } = Astro.props;
+---
+
+<Section id="summary" tone="paper" aria-labelledby="summary-heading">
+  <Container class="flex flex-col gap-10 py-14 md:gap-14 md:py-24">
+    <ReportMetaStrip items={meta} />
+
+    <div
+      class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-20 lg:items-start"
+    >
+      <div class="flex flex-col gap-7">
+        <Eyebrow>{hero.eyebrow}</Eyebrow>
+        <h1
+          id="summary-heading"
+          class="text-h1-m font-semibold tracking-[-0.025em] text-ink md:text-h1 md:leading-[1.04]"
+        >
+          {hero.title}
+          <br />
+          <span class="font-medium text-faint">{hero.titleSuffix}</span>
+        </h1>
+
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <StatusBadge
+            status={hero.overallStatus}
+            label="OVERALL: PASS"
+            size="lg"
+            icon="check"
+          />
+          <span class="font-mono text-[13px] text-text-2"
+            >{hero.statusLine}</span
+          >
+        </div>
+
+        <p
+          class="max-w-2xl text-verdict-m font-medium tracking-[-0.01em] text-ink md:text-verdict md:leading-[1.3]"
+        >
+          {hero.verdict}
+        </p>
+        <p class="max-w-xl text-body-lg leading-relaxed text-text-2">
+          {hero.bio}
+        </p>
+
+        <div class="flex flex-wrap gap-3 pt-2">
+          {
+            hero.ctas.map((cta) => (
+              <Button
+                href={cta.href}
+                variant={cta.variant}
+                showArrow={cta.variant === "primary"}
+              >
+                {cta.label}
+              </Button>
+            ))
+          }
+        </div>
+      </div>
+
+      <KeyValueCard
+        title="Test subject"
+        badge={subjectCard.badge}
+        rows={subjectCard.rows}
+      />
+    </div>
+
+    <div class="grid border-y border-rule sm:grid-cols-2 lg:grid-cols-4">
+      {
+        metrics.map((metric) => (
+          <MetricTile
+            value={metric.value}
+            label={metric.label}
+            status={metric.status}
+            size="hero"
+          />
+        ))
+      }
+    </div>
+  </Container>
+</Section>

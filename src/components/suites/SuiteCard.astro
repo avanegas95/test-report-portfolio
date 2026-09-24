@@ -1,0 +1,66 @@
+---
+import Chip from "@components/primitives/Chip.astro";
+import TestCaseRowStatic from "./TestCaseRowStatic.astro";
+import { formatSuiteDates, formatSuitePassLabel } from "@/lib/format";
+import type { Suite } from "@/lib/types";
+
+interface Props {
+  suite: Suite;
+}
+
+const { suite } = Astro.props;
+
+const passed = suite.cases.filter((c) => c.status === "pass").length;
+const total = suite.cases.length;
+const passLabel = formatSuitePassLabel(passed, total);
+const dateRange = formatSuiteDates(suite.start, suite.end);
+const chipStatus = suite.chip === "info" ? "info" : "neutral";
+---
+
+<article class="overflow-hidden rounded-xl border border-rule bg-paper">
+  <div
+    class="flex flex-col gap-4 border-b border-rule px-5 py-6 md:flex-row md:items-center md:justify-between md:px-7"
+  >
+    <div class="flex items-center gap-4">
+      <Chip status={chipStatus} class="!px-2.5 !py-1.5">
+        SUITE {suite.id}
+      </Chip>
+      <div class="flex flex-col gap-0.5">
+        <h3 class="text-h3 text-ink">{suite.company}</h3>
+        <span class="text-[15px] text-text-2">{suite.title}</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-6">
+      <span class="font-mono text-[13px] text-text-2">{dateRange}</span>
+      <div class="flex w-[140px] flex-col gap-1.5" aria-hidden="true">
+        <span class="text-right font-mono text-xs font-semibold text-pass"
+          >{passLabel}</span
+        >
+        <span class="h-1 rounded-sm bg-pass-dot"></span>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="hidden grid-cols-[112px_minmax(0,1fr)_150px_96px_24px] gap-4 bg-paper-alt px-7 py-3 font-mono text-label uppercase tracking-label text-muted md:grid"
+  >
+    <span>ID</span>
+    <span>Test case</span>
+    <span>Area</span>
+    <span>Status</span>
+    <span></span>
+  </div>
+
+  {
+    suite.cases.map((testCase) => (
+      <TestCaseRowStatic
+        id={testCase.id}
+        title={testCase.title}
+        area={testCase.area}
+        status={testCase.status}
+        story={testCase.story}
+        defaultOpen={testCase.defaultOpen}
+      />
+    ))
+  }
+</article>

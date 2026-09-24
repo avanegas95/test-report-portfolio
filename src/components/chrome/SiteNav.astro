@@ -1,0 +1,70 @@
+---
+import Icon from "@components/primitives/Icon.astro";
+
+interface SectionLink {
+  id: string;
+  number: string;
+  label: string;
+}
+
+interface Props {
+  version: string;
+  sections: SectionLink[];
+  resumePdf: string;
+}
+
+const { version, sections, resumePdf } = Astro.props;
+
+const downloadClasses =
+  "hidden h-10 items-center justify-center gap-2 rounded-md border border-border-control bg-paper px-4 text-sm font-medium text-ink no-underline transition-colors hover:border-ink hover:text-ink sm:inline-flex";
+---
+
+<header
+  class="sticky top-0 z-50 border-b border-rule bg-paper/95 backdrop-blur-sm"
+>
+  <div
+    class="mx-auto flex h-[60px] max-w-report items-center justify-between gap-4 px-4 sm:px-5 md:h-[72px] lg:px-8"
+  >
+    <a href="#summary" class="flex items-center gap-3 text-ink no-underline">
+      <span
+        class="flex h-8 w-8 items-center justify-center rounded-sm bg-ink font-mono text-[13px] font-semibold text-paper"
+        aria-hidden="true"
+      >
+        AV
+      </span>
+      <span class="hidden text-[15px] font-semibold sm:inline">Test Report</span
+      >
+      <span class="font-mono text-xs text-muted">{version}</span>
+    </a>
+
+    <nav
+      aria-label="Report sections"
+      class="hidden items-center gap-8 text-sm md:flex"
+    >
+      {
+        sections.map((section) => (
+          <a
+            href={`#${section.id}`}
+            class="flex items-center gap-1.5 text-text-2 no-underline hover:text-ink"
+          >
+            <span class="font-mono text-faint">{section.number}</span>
+            {section.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <nav
+      aria-label="Mobile report sections"
+      class="flex items-center gap-3 md:hidden"
+    >
+      <a href="#summary" class="text-sm text-text-2 no-underline">Summary</a>
+    </nav>
+
+    <a href={resumePdf} download class={downloadClasses}>
+      <Icon name="download" class="size-4" />
+      <span class="hidden lg:inline">Download report (PDF)</span>
+      <span class="lg:hidden">PDF</span>
+    </a>
+  </div>
+</header>

@@ -1,0 +1,41 @@
+---
+import Eyebrow from "@components/primitives/Eyebrow.astro";
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  titleSuffix?: string;
+  lede?: string;
+  headingId: string;
+}
+
+const { eyebrow, title, titleSuffix, lede, headingId } = Astro.props;
+---
+
+<div class="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
+  <div class="flex max-w-2xl flex-col gap-3.5">
+    <Eyebrow>{eyebrow}</Eyebrow>
+    <h2
+      id={headingId}
+      class="text-h2-m font-semibold tracking-[-0.02em] text-ink md:text-h2 md:leading-[1.1]"
+    >
+      {title}
+      {
+        titleSuffix && (
+          <>
+            <br />
+            <span class="font-medium text-faint">{titleSuffix}</span>
+          </>
+        )
+      }
+    </h2>
+    {lede && <p class="text-lede leading-relaxed text-text-2">{lede}</p>}
+  </div>
+  {
+    Astro.slots.has("aside") && (
+      <div class="shrink-0">
+        <slot name="aside" />
+      </div>
+    )
+  }
+</div>

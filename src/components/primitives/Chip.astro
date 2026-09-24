@@ -1,0 +1,36 @@
+---
+export type ChipVariant =
+  "info" | "neutral" | "suite-info" | "suite-neutral" | "tool" | "tool-neutral";
+
+interface Props {
+  status?: "info" | "neutral";
+  variant?: ChipVariant;
+  class?: string;
+}
+
+const { status, variant: variantProp, class: className = "" } = Astro.props;
+
+const variant: ChipVariant =
+  variantProp ?? (status === "info" ? "suite-info" : "suite-neutral");
+
+const tone: Record<ChipVariant, string> = {
+  info: "bg-info-bg text-info",
+  neutral: "bg-chip-neutral text-ink border border-rule",
+  "suite-info":
+    "bg-info-bg text-info font-semibold uppercase tracking-badge text-xs",
+  "suite-neutral":
+    "bg-chip-neutral text-ink border border-rule font-semibold uppercase tracking-badge text-xs",
+  tool: "border border-rule bg-paper font-mono text-xs text-ink",
+  "tool-neutral": "bg-chip-neutral font-mono text-xs text-ink",
+};
+---
+
+<span
+  class:list={[
+    "inline-flex items-center rounded-sm px-2.5 py-1.5",
+    tone[variant],
+    className,
+  ]}
+>
+  <slot />
+</span>

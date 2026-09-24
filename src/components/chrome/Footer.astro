@@ -1,0 +1,17 @@
+---
+interface Props {
+  left: string;
+  right: string;
+}
+
+const { left, right } = Astro.props;
+---
+
+<footer class="border-t border-rule bg-paper py-5">
+  <div
+    class="mx-auto flex max-w-report flex-col gap-2 px-4 font-mono text-xs text-muted sm:px-5 sm:flex-row sm:items-center sm:justify-between lg:px-8"
+  >
+    <span>{left}</span>
+    <span>{right}</span>
+  </div>
+</footer>

@@ -1,0 +1,26 @@
+---
+interface Props {
+  tone?: "paper" | "alt";
+  id?: string;
+  class?: string;
+  "aria-labelledby"?: string;
+}
+
+const {
+  tone = "paper",
+  id,
+  class: className = "",
+  "aria-labelledby": ariaLabelledby,
+} = Astro.props;
+
+const toneClasses =
+  tone === "alt" ? "border-y border-rule bg-paper-alt" : "bg-paper";
+---
+
+<section
+  id={id}
+  aria-labelledby={ariaLabelledby}
+  class:list={["scroll-mt-[60px] md:scroll-mt-[72px]", toneClasses, className]}
+>
+  <slot />
+</section>

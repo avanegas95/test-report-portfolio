@@ -1,0 +1,107 @@
+---
+import StatusBadge from "@components/primitives/StatusBadge.astro";
+import Icon from "@components/primitives/Icon.astro";
+import type { Status } from "@/lib/status";
+import { formatDuration } from "@/lib/format";
+
+interface Run {
+  number: number;
+  commit: string;
+  message: string;
+  durationSeconds: number;
+  status: Status;
+  note?: string;
+  url?: string;
+}
+
+interface Props {
+  runs: Run[];
+  actionsUrl: string;
+}
+
+const { runs, actionsUrl } = Astro.props;
+---
+
+<div class="overflow-hidden rounded-xl border border-rule bg-paper">
+  <div
+    class="flex flex-col gap-3 border-b border-rule px-5 py-5 sm:flex-row sm:items-center sm:justify-between md:px-7"
+  >
+    <span class="text-[15px] font-semibold text-ink">Recent runs</span>
+    <a
+      href={actionsUrl}
+      class="inline-flex items-center gap-1 text-sm no-underline"
+    >
+      View all in GitHub Actions
+      <Icon name="arrow" class="size-3.5" />
+    </a>
+  </div>
+
+  <table class="hidden w-full md:table">
+    <caption class="sr-only">Recent CI runs</caption>
+    <thead>
+      <tr
+        class="grid grid-cols-[96px_110px_minmax(0,1fr)_90px_96px] gap-4 bg-paper-alt px-7 py-3 font-mono text-label uppercase tracking-label text-muted"
+      >
+        <th scope="col" class="text-left font-normal">Run</th>
+        <th scope="col" class="text-left font-normal">Commit</th>
+        <th scope="col" class="text-left font-normal">Message</th>
+        <th scope="col" class="text-left font-normal">Time</th>
+        <th scope="col" class="text-left font-normal">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        runs.map((run) => (
+          <tr class="grid grid-cols-[96px_110px_minmax(0,1fr)_90px_96px] items-center gap-4 border-t border-rule-soft px-7 py-3.5 text-sm">
+            <td class="font-mono text-[13px]">
+              {run.url ? (
+                <a href={run.url} class="no-underline">
+                  #{run.number}
+                </a>
+              ) : (
+                <>#{run.number}</>
+              )}
+            </td>
+            <td class="font-mono text-[13px] text-muted">{run.commit}</td>
+            <td>
+              {run.message}
+              {run.note && <span class="text-muted"> — {run.note}</span>}
+            </td>
+            <td class="font-mono text-[13px] text-muted">
+              {formatDuration(run.durationSeconds)}
+            </td>
+            <td>
+              <StatusBadge status={run.status} />
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <ul class="list-none p-0 md:hidden">
+    {
+      runs.map((run) => (
+        <li class="border-t border-rule-soft px-5 py-4">
+          <div class="mb-2 flex items-center justify-between gap-3">
+            <span class="font-mono text-[13px]">
+              {run.url ? (
+                <a href={run.url} class="no-underline">
+                  #{run.number}
+                </a>
+              ) : (
+                <>#{run.number}</>
+              )}
+            </span>
+            <StatusBadge status={run.status} />
+          </div>
+          <p class="mb-1 text-sm">{run.message}</p>
+          {run.note && <p class="mb-1 text-sm text-muted">{run.note}</p>}
+          <p class="font-mono text-xs text-muted">
+            {run.commit} · {formatDuration(run.durationSeconds)}
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+</div>

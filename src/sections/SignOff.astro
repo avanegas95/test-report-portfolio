@@ -1,0 +1,54 @@
+---
+import Container from "@components/primitives/Container.astro";
+import Section from "@components/primitives/Section.astro";
+import SectionHeader from "@components/report/SectionHeader.astro";
+import SignOff from "@components/signoff/SignOff.astro";
+import type { Status } from "@/lib/status";
+
+interface Props {
+  section: {
+    eyebrow: string;
+    title: string;
+    titleSuffix: string;
+    lede: string;
+    approvals: Array<{
+      key: string;
+      value: string;
+      placeholderStyle?: boolean;
+    }>;
+    knownIssue: {
+      id: string;
+      status: Status;
+      label: string;
+      text: string;
+    };
+  };
+  contact: {
+    email: string;
+    linkedin: string;
+    github: string;
+    resumePdf: string;
+  };
+}
+
+const { section, contact } = Astro.props;
+---
+
+<Section
+  id="signoff"
+  tone="paper"
+  aria-labelledby="signoff-heading"
+  class="!pb-12"
+>
+  <Container class="py-14 md:py-24">
+    <SignOff signoff={section} contact={contact}>
+      <SectionHeader
+        eyebrow={section.eyebrow}
+        title={section.title}
+        titleSuffix={section.titleSuffix}
+        lede={section.lede}
+        headingId="signoff-heading"
+      />
+    </SignOff>
+  </Container>
+</Section>

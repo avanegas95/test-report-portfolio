@@ -1,0 +1,32 @@
+---
+import Container from "@components/primitives/Container.astro";
+import Section from "@components/primitives/Section.astro";
+import SectionHeader from "@components/report/SectionHeader.astro";
+import ToolMatrix from "@components/environment/ToolMatrix.astro";
+
+interface Props {
+  section: {
+    eyebrow: string;
+    title: string;
+    lede: string;
+  };
+  tools: Array<{ group: string; items: string[] }>;
+  testBeds: { group: string; items: string[] };
+}
+
+const { section, tools, testBeds } = Astro.props;
+---
+
+<Section id="environment" tone="paper" aria-labelledby="environment-heading">
+  <Container class="py-14 md:py-24">
+    <div class="grid gap-10 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-20">
+      <SectionHeader
+        eyebrow={section.eyebrow}
+        title={section.title}
+        lede={section.lede}
+        headingId="environment-heading"
+      />
+      <ToolMatrix groups={tools} testBeds={testBeds} />
+    </div>
+  </Container>
+</Section>
