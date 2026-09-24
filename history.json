@@ -1,12 +1,12 @@
 {
   "runs": [
     {
-      "number": 4,
-      "commit": "a1a2ecd",
-      "message": "Make focus-outline test reach the row via keyboard in all engines\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
-      "durationSeconds": 20,
+      "number": 5,
+      "commit": "5056c22",
+      "message": "Use Option+Tab for the keyboard focus test on WebKit\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+      "durationSeconds": 21,
       "status": "fail",
-      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/4",
+      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/5",
       "note": "Playwright: 47/48 passed (1 failed, 0 skipped). Blocked."
     }
   ],
