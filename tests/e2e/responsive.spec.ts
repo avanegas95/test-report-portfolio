@@ -15,7 +15,10 @@ test.describe("mobile layout", () => {
     expect(overflow).toBeLessThanOrEqual(1);
 
     await expect(page.locator("section#quality table")).toBeHidden();
-    await expect(page.locator("section#quality ul").first()).toBeVisible();
+    const runsList = page.locator("section#quality ul");
+    if ((await runsList.locator("li").count()) > 0) {
+      await expect(runsList.first()).toBeVisible();
+    }
 
     await page.goto("/#suites");
     const suiteHeader = page

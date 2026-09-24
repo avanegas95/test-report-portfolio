@@ -36,7 +36,17 @@ const { runs, actionsUrl } = Astro.props;
     </a>
   </div>
 
-  <table class="hidden w-full md:table">
+  {
+    runs.length === 0 && (
+      <p class="px-5 py-4 text-sm text-muted md:px-7">
+        No previous runs recorded yet.
+      </p>
+    )
+  }
+
+  <table
+    class:list={["w-full", runs.length > 0 ? "hidden md:table" : "hidden"]}
+  >
     <caption class="sr-only">Recent CI runs</caption>
     <thead>
       <tr

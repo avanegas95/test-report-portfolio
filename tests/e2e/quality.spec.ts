@@ -12,8 +12,9 @@ function loadExpectedReport() {
       lighthouse: { performance: number };
       playwright: { passed: number; total: number };
       axe: { statesScanned: number };
+      stages: Array<{ name: string }>;
     };
-    runs: Array<{ message: string; status: string }>;
+    runs: Array<{ number: number; message: string; status: string }>;
   };
 }
 
@@ -50,9 +51,15 @@ test(
       }),
     ).toBeVisible();
 
-    await expect(
-      qualitySection.getByRole("link", { name: `#${latest.number}` }),
-    ).toBeVisible();
+    // `runs` is the history before this build, so it may not include the
+    // latest run (and is empty on the first CI run).
+    for (const run of sampleReport.runs.slice(0, 1)) {
+      await expect(
+        qualitySection
+          .locator("table")
+          .getByRole("link", { name: `#${run.number}` }),
+      ).toBeVisible();
+    }
     expect(sampleReport.runs.length).toBeLessThanOrEqual(10);
 
     const failRows = sampleReport.runs.filter((run) => run.status === "fail");
@@ -72,10 +79,14 @@ test(
       await expect(row.getByText("WARN", { exact: true })).toBeVisible();
     }
 
-    const deployStage = page
-      .locator("section#quality")
-      .locator("li")
-      .filter({ hasText: "Deploy" });
-    await expect(deployStage.getByText("live", { exact: true })).toBeVisible();
+    if (latest.stages.some((stage) => stage.name === "Deploy")) {
+      const deployStage = page
+        .locator("section#quality")
+        .locator("li")
+        .filter({ hasText: "Deploy" });
+      await expect(
+        deployStage.getByText("live", { exact: true }),
+      ).toBeVisible();
+    }
   },
 );

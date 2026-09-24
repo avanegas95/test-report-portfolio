@@ -97,6 +97,9 @@ jobs:
         env:
           BUILD_TIME: ${{ env.BUILD_TIME }}
           CI: "true"
+          # Firefox refuses to launch when $HOME isn't owned by the container user.
+          HOME: /root
+          QUALITY_REPORT: .quality/current.json
           REUSE_EXISTING_SERVER: "1"
 
       - name: axe
@@ -106,6 +109,8 @@ jobs:
           BUILD_TIME: ${{ env.BUILD_TIME }}
           CI: "true"
           PLAYWRIGHT_JSON_OUTPUT: reports/playwright-a11y.json
+          HOME: /root
+          QUALITY_REPORT: .quality/current.json
           REUSE_EXISTING_SERVER: "1"
 
       - name: Lighthouse
@@ -187,6 +192,7 @@ jobs:
           CI: "true"
           PLAYWRIGHT_BASE_URL: http://localhost:4322
           PLAYWRIGHT_JSON_OUTPUT: reports/playwright-a11y-b.json
+          HOME: /root
           QUALITY_REPORT: reports/quality-report.json
           REUSE_EXISTING_SERVER: "1"
 
@@ -198,6 +204,7 @@ jobs:
           CI: "true"
           PLAYWRIGHT_BASE_URL: http://localhost:4322
           PLAYWRIGHT_JSON_OUTPUT: reports/playwright-quality-b.json
+          HOME: /root
           QUALITY_REPORT: reports/quality-report.json
           REUSE_EXISTING_SERVER: "1"
 
@@ -227,6 +234,8 @@ jobs:
       - name: Configure git for history
         if: always() && github.event_name != 'pull_request'
         run: |
+          # The container runs as a different user than the checkout owner.
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
