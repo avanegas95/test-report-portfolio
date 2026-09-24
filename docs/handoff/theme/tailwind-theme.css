@@ -1,0 +1,68 @@
+/* Tailwind v4 theme for "The Test Report". Import after `@import "tailwindcss";`
+   Mirrors tokens.json. Color is semantic only: pass / warn / fail / info. */
+
+@theme {
+  /* Neutrals */
+  --color-ink: #14161A;
+  --color-text-2: #4A5160;
+  --color-text-3: #2B3038;
+  --color-muted: #636B78;        /* min for readable small text; do not lighten */
+  --color-faint: #8A919C;        /* decorative / large text only */
+  --color-rule: #E3E5E9;
+  --color-rule-soft: #EDEEF1;
+  --color-border-control: #D5D8DE;
+  --color-paper: #FFFFFF;
+  --color-paper-alt: #FAFAF8;
+  --color-chip-neutral: #F0F1F3;
+
+  /* Status: pass */
+  --color-pass: #17693F;
+  --color-pass-bg: #E6F4EC;
+  --color-pass-border: #BFE3CD;
+  --color-pass-dot: #1F8A52;
+  --color-pass-surface: #F3FAF6;
+  --color-pass-surface-border: #D5EDDF;
+
+  /* Status: warn */
+  --color-warn: #8A5300;
+  --color-warn-bg: #FDF2DB;
+  --color-warn-border: #F3DDAF;
+  --color-warn-dot: #D98A00;
+  --color-warn-surface: #FFFBF2;
+
+  /* Status: fail */
+  --color-fail: #B42318;
+  --color-fail-bg: #FDECEA;
+  --color-fail-dot: #D92D20;
+
+  /* Status: info */
+  --color-info: #1F55B8;
+  --color-info-bg: #E8EFFC;
+  --color-info-dot: #2F6BD8;
+  --color-info-surface: #F5F8FE;
+  --color-info-surface-border: #DCE5F5;
+  --color-link-hover: #153E87;
+
+  /* Type */
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --tracking-eyebrow: 0.1em;
+  --tracking-label: 0.08em;
+  --tracking-badge: 0.06em;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+
+  /* Layout */
+  --container-report: 1120px;
+}
+
+@layer base {
+  html { font-family: var(--font-sans); color: var(--color-ink); background: var(--color-paper); }
+  a { color: var(--color-info); }
+  a:hover { color: var(--color-link-hover); }
+}

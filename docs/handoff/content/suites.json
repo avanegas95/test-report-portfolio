@@ -1,0 +1,59 @@
+{
+  "$note": "Work history as test suites. Titles are real. Only BD-004 has a story (draft); rows without a story should render non-expandable or get stories from Anderson. Pass counts and the pass-rate metric are computed from this file.",
+  "suites": [
+    {
+      "id": "BD",
+      "company": "Boston Dynamics",
+      "title": "Senior → Staff SQA Engineer",
+      "start": "2023",
+      "end": null,
+      "chip": "info",
+      "cases": [
+        { "id": "BD-001", "title": "Led project QA across HIL rigs, Gazebo simulation and Appium Android app testing", "area": "Leadership", "status": "pass" },
+        { "id": "BD-002", "title": "Integrated automated tests into CI/CD with stage-based reporting", "area": "CI/CD", "status": "pass" },
+        { "id": "BD-003", "title": "Onboarded non-SQA engineers through structured QA training", "area": "Enablement", "status": "pass" },
+        {
+          "id": "BD-004",
+          "title": "Built a Python SSH-based robot monitoring tool",
+          "area": "Tooling",
+          "status": "pass",
+          "defaultOpen": true,
+          "story": {
+            "$status": "DRAFT, confirm wording with Anderson",
+            "precondition": "Robot health lived in scattered logs. Checking a unit meant opening an SSH session and already knowing where to look — tribal knowledge with a terminal prompt.",
+            "steps": [
+              "Wrote a Python tool that opens SSH sessions to robots under test.",
+              "Pulled metrics in real time and surfaced them in one readable view.",
+              "Handed it to the wider team, so anyone — not just SQA — can read a robot’s vitals."
+            ],
+            "expected": "Engineers see what a robot is doing while it’s doing it.",
+            "actual": "Matches expected. Far fewer “can you check the logs?” messages. [ADD IMPACT — e.g. issues caught earlier, hours saved]",
+            "terminal": [
+              { "cmd": "$ robot-monitor --watch" },
+              { "line": "connect  unit-01 via ssh", "result": "ok", "status": "pass" },
+              { "line": "connect  unit-02 via ssh", "result": "ok", "status": "pass" },
+              { "line": "stream   metrics", "result": "live", "status": "info" },
+              { "line": "threshold alerts", "result": "armed", "status": "info" }
+            ],
+            "tags": ["Python", "SSH", "Linux / Bash"]
+          }
+        },
+        { "id": "BD-005", "title": "Promoted Senior → Staff SQA Engineer", "area": "Regression-free", "status": "pass" }
+      ]
+    },
+    {
+      "id": "SN",
+      "company": "SharkNinja",
+      "title": "SQA Engineer I → II",
+      "start": "2019",
+      "end": "2023",
+      "chip": "neutral",
+      "cases": [
+        { "id": "SN-001", "title": "Wrote manual test cases for cloud services and consumer mobile apps", "area": "Test design", "status": "pass" },
+        { "id": "SN-002", "title": "Mentored junior engineers and contractors", "area": "Mentorship", "status": "pass" },
+        { "id": "SN-003", "title": "Ran standups, defect triage and release coordination", "area": "Release", "status": "pass" },
+        { "id": "SN-004", "title": "Promoted SQA Engineer I → II", "area": "Career", "status": "pass" }
+      ]
+    }
+  ]
+}

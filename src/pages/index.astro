@@ -1,0 +1,23 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Placeholder } from "@components/Placeholder";
+---
+
+<BaseLayout title="Anderson Vanegas — The Test Report">
+  <main
+    id="main"
+    class="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16"
+  >
+    <p
+      class="mb-2 font-mono text-xs uppercase tracking-widest text-neutral-500"
+    >
+      M0 scaffold
+    </p>
+    <h1 class="mb-4 text-3xl font-semibold tracking-tight">The Test Report</h1>
+    <p class="mb-8 max-w-prose text-neutral-300">
+      Astro 6, React islands, and Tailwind v4 are wired up. The full report page
+      ships in M1.
+    </p>
+    <Placeholder client:load message="React island ready." />
+  </main>
+</BaseLayout>
