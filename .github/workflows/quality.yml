@@ -1,0 +1,227 @@
+name: quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 13 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: ${{ github.event_name == 'pull_request' && 'read' || 'write' }}
+
+env:
+  PLAYWRIGHT_VERSION: "1.51.1"
+  NODE_VERSION: "22"
+  BUILD_TIME: ${{ github.run_started_at }}
+  PIPELINE_START: ${{ github.run_started_at }}
+
+jobs:
+  quality:
+    name: Quality pipeline
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v${{ env.PLAYWRIGHT_VERSION }}-noble
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Fetch quality history
+        run: |
+          mkdir -p .quality
+          if git fetch origin quality-history:quality-history 2>/dev/null; then
+            git show quality-history:history.json > .quality/history.json
+            echo "Loaded history from quality-history branch."
+          else
+            echo "No quality-history branch yet; starting with empty history."
+          fi
+
+      - name: Bootstrap current report
+        run: node scripts/ci/bootstrap-current.mjs
+        env:
+          BUILD_TIME: ${{ env.BUILD_TIME }}
+
+      - name: Install
+        run: bash scripts/ci/stage.sh Install -- npm ci
+
+      - name: Lint
+        run: bash scripts/ci/stage.sh Lint -- npm run lint
+
+      - name: Build A
+        run: bash scripts/ci/stage.sh Build -- npm run build
+        env:
+          BUILD_TIME: ${{ env.BUILD_TIME }}
+          QUALITY_REPORT: .quality/current.json
+
+      - name: Serve A
+        run: |
+          npx sirv dist --port 4321 --brotli --gzip --single > reports/serve-a.log 2>&1 &
+          echo $! > reports/serve-a.pid
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:4321/ > /dev/null; then
+              echo "Serve A is ready."
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Serve A failed to start." >&2
+          cat reports/serve-a.log || true
+          exit 1
+
+      - name: Playwright
+        continue-on-error: true
+        run: bash scripts/ci/stage.sh Playwright -- npm run test:e2e
+        env:
+          BUILD_TIME: ${{ env.BUILD_TIME }}
+          CI: "true"
+          REUSE_EXISTING_SERVER: "1"
+
+      - name: axe
+        continue-on-error: true
+        run: bash scripts/ci/stage.sh axe -- npm run test:a11y
+        env:
+          BUILD_TIME: ${{ env.BUILD_TIME }}
+          CI: "true"
+          REUSE_EXISTING_SERVER: "1"
+
+      - name: Lighthouse
+        continue-on-error: true
+        run: |
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          bash scripts/ci/stage.sh Lighthouse -- npx lhci collect --config=lighthouserc.cjs
+
+      - name: Collect and validate report
+        id: collect
+        continue-on-error: true
+        run: |
+          node scripts/ci/collect-report.mjs
+          node scripts/ci/validate-report.mjs
+        env:
+          BUILD_TIME: ${{ env.BUILD_TIME }}
+          COMMIT_MESSAGE: >-
+            ${{ github.event_name == 'schedule'
+            && 'scheduled: weekly re-verification'
+            || github.event.head_commit.message
+            || 'CI quality run' }}
+
+      - name: Stop Serve A
+        if: always()
+        run: |
+          if [ -f reports/serve-a.pid ]; then
+            kill "$(cat reports/serve-a.pid)" || true
+          fi
+
+      - name: Pull Vercel settings
+        if: steps.collect.outputs.gate_status != 'fail'
+        run: npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build B
+        if: steps.collect.outputs.gate_status != 'fail'
+        run: bash scripts/ci/stage.sh Build -- npx vercel build --prod --token="$VERCEL_TOKEN"
+        env:
+          BUILD_TIME: ${{ env.BUILD_TIME }}
+          DEPLOY_ENV: production
+          QUALITY_REPORT: reports/quality-report.json
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Verify Build B equivalence
+        if: steps.collect.outputs.gate_status != 'fail'
+        run: node scripts/ci/equivalence.mjs
+
+      - name: Serve B
+        if: steps.collect.outputs.gate_status != 'fail'
+        run: |
+          npx sirv .vercel/output/static --port 4322 --brotli --gzip --single > reports/serve-b.log 2>&1 &
+          echo $! > reports/serve-b.pid
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:4322/ > /dev/null; then
+              echo "Serve B is ready."
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Serve B failed to start." >&2
+          cat reports/serve-b.log || true
+          exit 1
+
+      - name: axe on Build B
+        if: steps.collect.outputs.gate_status != 'fail'
+        run: npm run test:a11y
+        env:
+          BUILD_TIME: ${{ env.BUILD_TIME }}
+          CI: "true"
+          PLAYWRIGHT_BASE_URL: http://localhost:4322
+          QUALITY_REPORT: reports/quality-report.json
+          REUSE_EXISTING_SERVER: "1"
+
+      - name: Playwright @quality smoke on Build B
+        if: steps.collect.outputs.gate_status != 'fail'
+        run: npx playwright test --project=chromium --grep @quality
+        env:
+          BUILD_TIME: ${{ env.BUILD_TIME }}
+          CI: "true"
+          PLAYWRIGHT_BASE_URL: http://localhost:4322
+          QUALITY_REPORT: reports/quality-report.json
+          REUSE_EXISTING_SERVER: "1"
+
+      - name: Stop Serve B
+        if: always()
+        run: |
+          if [ -f reports/serve-b.pid ]; then
+            kill "$(cat reports/serve-b.pid)" || true
+          fi
+
+      - name: Deploy
+        if: >-
+          steps.collect.outputs.gate_status != 'fail' &&
+          (github.event_name != 'pull_request' ||
+          github.event.pull_request.head.repo.full_name == github.repository)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            bash scripts/ci/stage.sh Deploy -- npx vercel deploy --prebuilt --token="$VERCEL_TOKEN"
+          else
+            bash scripts/ci/stage.sh Deploy -- npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+          fi
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Configure git for history
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Record history
+        if: always() && github.event_name != 'pull_request'
+        run: node scripts/ci/record-history.mjs
+        env:
+          BUILD_TIME: ${{ env.BUILD_TIME }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail on blocking gates
+        if: steps.collect.outputs.gate_status == 'fail'
+        run: |
+          echo "Blocking quality gates failed. Build B, verification, and deploy were skipped."
+          exit 1

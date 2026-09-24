@@ -11,6 +11,7 @@ const {
   id,
   class: className = "",
   "aria-labelledby": ariaLabelledby,
+  ...rest
 } = Astro.props;
 
 const toneClasses =
@@ -21,6 +22,7 @@ const toneClasses =
   id={id}
   aria-labelledby={ariaLabelledby}
   class:list={["scroll-mt-[60px] md:scroll-mt-[72px]", toneClasses, className]}
+  {...rest}
 >
   <slot />
 </section>

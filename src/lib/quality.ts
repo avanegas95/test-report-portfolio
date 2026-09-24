@@ -22,6 +22,7 @@ const QualityReportSchema = z.object({
     durationSeconds: z.number(),
     durationScope: z.enum(["to-deploy", "total"]).optional(),
     status: QualityStatus,
+    note: z.string().optional(),
     deployedAt: z.string(),
     deployTarget: z.string(),
     lighthouse: z.object({

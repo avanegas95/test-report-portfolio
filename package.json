@@ -7,7 +7,7 @@
   },
   "scripts": {
     "predev": "node scripts/check-node.mjs",
-    "prebuild": "node scripts/check-node.mjs",
+    "prebuild": "node scripts/check-node.mjs && node scripts/check-quality-env.mjs",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
@@ -16,7 +16,10 @@
     "lint": "node scripts/check-node.mjs && node scripts/check-glyphs.mjs && node scripts/check-content.mjs && eslint . && prettier --check . && astro check",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:e2e": "playwright test --project=chromium --project=firefox --project=webkit",
+    "test:a11y": "playwright test --project=a11y",
+    "test": "playwright test"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -34,16 +37,23 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@lhci/cli": "^0.14.0",
+    "@playwright/test": "1.51.1",
     "@types/node": "^22.13.9",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "eslint": "^9.39.4",
     "eslint-plugin-astro": "^1.7.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "globals": "^16.0.0",
+    "node-html-parser": "^7.1.0",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
+    "sirv-cli": "^3.0.1",
     "typescript-eslint": "^8.59.4"
   }
 }

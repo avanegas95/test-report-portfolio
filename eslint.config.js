@@ -33,7 +33,7 @@ export default [
     },
   },
   {
-    ignores: ["dist/", ".astro/", "node_modules/"],
+    ignores: ["dist/", ".astro/", ".vercel/", "node_modules/", "reports/"],
   },
   {
     files: ["src/env.d.ts"],
