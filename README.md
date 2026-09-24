@@ -21,17 +21,22 @@ npm install
 | `npm run dev`          | Start the Astro dev server (port 4321)                             |
 | `npm run build`        | Type-check with `astro check`, then build static output to `dist/` |
 | `npm run preview`      | Serve the production build locally                                 |
-| `npm run lint`         | Node version check, ESLint, Prettier check, and `astro check`      |
+| `npm run lint`         | Node, ESLint, Prettier, `astro check`, glyph and content guards    |
 | `npm run lint:fix`     | Auto-fix ESLint issues                                             |
 | `npm run format`       | Format all files with Prettier                                     |
 | `npm run format:check` | Verify formatting without writing                                  |
+| `npm run test`         | Playwright e2e (3 browsers) + axe a11y                             |
+| `npm run test:e2e`     | Playwright e2e only                                                |
+| `npm run test:a11y`    | axe accessibility scans only                                       |
 
 ## Editing content
 
-Content will live under `src/content/` as Astro collections (site singleton + suite JSON files). Until M2 lands, reference copy and structure in:
+Content lives under `src/content/` as Astro collections:
 
-- `docs/handoff/content/site.json`
-- `docs/handoff/content/suites.json`
+- `src/content/site.json` — hero, metrics, tools, sign-off, contact
+- `src/content/suites/*.json` — one file per employer (sorted by `order`)
+
+Reference mockups and the original handoff JSON remain in `docs/handoff/`.
 
 The quality report is **not** content — CI writes `reports/quality-report.json` at build time via the `QUALITY_REPORT` env var. In local dev, a sample file is used when that var is unset.
 
