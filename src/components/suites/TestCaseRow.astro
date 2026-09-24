@@ -1,0 +1,108 @@
+---
+import {
+  statusBgClass,
+  statusDotClass,
+  statusLabel,
+  type Status,
+} from "@/lib/status";
+
+interface Props {
+  id: string;
+  title: string;
+  area: string;
+  status: Status;
+  defaultOpen?: boolean;
+}
+
+const { id, title, area, status, defaultOpen = false } = Astro.props;
+
+const headerId = `${id}-header`;
+const panelId = `story-${id}`;
+const mobileSummaryId = `${id}-summary`;
+
+// Open-state styling keys off aria-expanded so the script only flips ARIA.
+const rowGrid =
+  "group grid w-full grid-cols-1 gap-2 px-5 py-4 text-left md:grid-cols-[112px_minmax(0,1fr)_150px_96px_24px] md:items-center md:gap-4 md:px-7 md:py-0 md:min-h-[60px] bg-paper aria-expanded:bg-info-surface aria-expanded:shadow-[inset_3px_0_0_0_var(--color-info-dot)]";
+---
+
+<div class="test-case-row border-t border-rule-soft">
+  <button
+    type="button"
+    id={headerId}
+    class={rowGrid}
+    aria-expanded={defaultOpen ? "true" : "false"}
+    aria-controls={panelId}
+    aria-describedby={mobileSummaryId}
+    data-disclosure
+  >
+    <span
+      class="font-mono text-[13px] text-muted group-aria-expanded:font-semibold group-aria-expanded:text-info"
+    >
+      {id}
+    </span>
+    <span
+      class="text-row-title-m font-medium group-aria-expanded:font-semibold md:text-row-title"
+    >
+      <span id={mobileSummaryId} class="font-mono text-xs text-muted md:hidden">
+        {id} · {area} ·{" "}
+      </span>
+      {title}
+    </span>
+    <span class="hidden font-mono text-xs text-text-2 md:block">{area}</span>
+    <span class="justify-self-start">
+      <span
+        class:list={[
+          "inline-flex items-center gap-1.5 rounded-full px-[9px] py-[3px] font-mono text-badge font-semibold uppercase tracking-badge",
+          statusBgClass(status),
+        ]}
+      >
+        <span
+          class:list={[
+            "size-1.5 shrink-0 rounded-full",
+            statusDotClass(status),
+          ]}
+          aria-hidden="true"></span>
+        {statusLabel(status)}
+      </span>
+    </span>
+    <span class="hidden justify-self-end md:block">
+      <svg
+        class="size-[18px] -rotate-90 text-faint transition-transform duration-200 group-aria-expanded:rotate-0 group-aria-expanded:text-info motion-reduce:transition-none"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m6 9 6 6 6-6"></path>
+      </svg>
+    </span>
+  </button>
+
+  <div
+    id={panelId}
+    role="region"
+    aria-labelledby={headerId}
+    hidden={!defaultOpen}
+  >
+    <slot />
+  </div>
+</div>
+
+<script>
+  document.addEventListener("click", (event) => {
+    const button = (event.target as Element | null)?.closest<HTMLButtonElement>(
+      "button[data-disclosure]",
+    );
+    if (!button) return;
+
+    const panel = document.getElementById(
+      button.getAttribute("aria-controls") ?? "",
+    );
+    const open = button.getAttribute("aria-expanded") !== "true";
+    button.setAttribute("aria-expanded", String(open));
+    if (panel) panel.hidden = !open;
+  });
+</script>

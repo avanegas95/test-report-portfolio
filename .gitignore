@@ -12,3 +12,4 @@ reports/
 test-results/
 playwright-report/
 .lighthouseci/
+.vercel

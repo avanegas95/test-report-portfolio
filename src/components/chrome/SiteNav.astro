@@ -1,6 +1,6 @@
 ---
 import Icon from "@components/primitives/Icon.astro";
-import MobileMenu from "./MobileMenu";
+import MobileMenu from "./MobileMenu.astro";
 
 interface SectionLink {
   id: string;
@@ -55,7 +55,7 @@ const downloadClasses =
       }
     </nav>
 
-    <MobileMenu client:media="(max-width: 767px)" sections={sections} />
+    <MobileMenu sections={sections} />
 
     <a href={resumePdf} download class={downloadClasses}>
       <Icon name="download" class="size-4" />

@@ -1,0 +1,154 @@
+---
+interface SectionLink {
+  id: string;
+  number: string;
+  label: string;
+}
+
+interface Props {
+  sections: SectionLink[];
+}
+
+const { sections } = Astro.props;
+
+const panelId = "mobile-sections-menu";
+---
+
+<div class="mobile-menu relative flex items-center gap-3 md:hidden">
+  <span
+    class="font-mono text-sm text-text-2"
+    aria-live="polite"
+    aria-atomic="true"
+    data-section-indicator
+  >
+    § {sections[0]?.number ?? "01"}
+  </span>
+
+  <button
+    type="button"
+    class="group inline-flex size-11 items-center justify-center rounded-md border border-border-control bg-paper text-ink"
+    aria-label="Open sections menu"
+    aria-expanded="false"
+    aria-controls={panelId}
+    data-menu-button
+  >
+    <svg
+      class="size-5 group-aria-expanded:hidden"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      aria-hidden="true"
+    >
+      <path d="M4 6h16"></path>
+      <path d="M4 12h16"></path>
+      <path d="M4 18h16"></path>
+    </svg>
+    <svg
+      class="hidden size-5 group-aria-expanded:block"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      aria-hidden="true"
+    >
+      <path d="M18 6 6 18"></path>
+      <path d="m6 6 12 12"></path>
+    </svg>
+  </button>
+
+  <nav
+    id={panelId}
+    aria-label="Report sections"
+    class="absolute right-0 top-[calc(100%+0.5rem)] z-50 min-w-[220px] rounded-lg border border-rule bg-paper py-2 shadow-lg"
+    hidden
+  >
+    <ul class="m-0 list-none p-0">
+      {
+        sections.map((section) => (
+          <li>
+            <a
+              href={`#${section.id}`}
+              class="flex items-center gap-2 px-4 py-3 text-sm text-text-2 no-underline hover:bg-paper-alt hover:text-ink"
+              data-section-id={section.id}
+              data-section-number={section.number}
+            >
+              <span class="font-mono text-muted">{section.number}</span>
+              {section.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</div>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>(".mobile-menu")) {
+    const button = root.querySelector<HTMLButtonElement>("[data-menu-button]")!;
+    const panel = root.querySelector<HTMLElement>("nav")!;
+    const indicator = root.querySelector<HTMLElement>(
+      "[data-section-indicator]",
+    )!;
+    const links = [
+      ...root.querySelectorAll<HTMLAnchorElement>("a[data-section-id]"),
+    ];
+
+    const setOpen = (open: boolean) => {
+      button.setAttribute("aria-expanded", String(open));
+      panel.hidden = !open;
+    };
+
+    const closeMenu = () => {
+      setOpen(false);
+      button.focus();
+    };
+
+    button.addEventListener("click", () => {
+      setOpen(button.getAttribute("aria-expanded") !== "true");
+    });
+
+    for (const link of links) {
+      link.addEventListener("click", closeMenu);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !panel.hidden) {
+        event.preventDefault();
+        closeMenu();
+      }
+    });
+
+    const numberById = new Map(
+      links.map((link) => [
+        link.dataset.sectionId!,
+        link.dataset.sectionNumber!,
+      ]),
+    );
+    const sectionElements = [...numberById.keys()]
+      .map((id) => document.getElementById(id))
+      .filter((element): element is HTMLElement => element !== null);
+
+    if (sectionElements.length > 0) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+          const number = visible[0] && numberById.get(visible[0].target.id);
+          if (number) indicator.textContent = `§ ${number}`;
+        },
+        {
+          rootMargin: "-20% 0px -60% 0px",
+          threshold: [0, 0.25, 0.5, 0.75, 1],
+        },
+      );
+
+      for (const element of sectionElements) {
+        observer.observe(element);
+      }
+    }
+  }
+</script>
