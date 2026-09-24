@@ -1,14 +1,94 @@
 {
   "runs": [
     {
-      "number": 7,
-      "commit": "f694d26",
-      "message": "Pick keyboard focus strategy per engine in the outline test\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
-      "durationSeconds": 21,
-      "status": "fail",
-      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/7",
-      "note": "Lighthouse performance 88 < 95. Blocked."
+      "number": 11,
+      "commit": "eebfcc8",
+      "message": "Merge pull request #1 from avanegas95/perf/drop-react-islands\n\nReplace React islands with Astro components to pass the perf gate",
+      "durationSeconds": 181,
+      "status": "pass",
+      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/11"
     }
   ],
-  "deployed": null
+  "deployed": {
+    "generatedAt": "2026-09-24T20:39:40Z",
+    "actionsUrl": "https://github.com/avanegas95/test-report-portfolio/actions",
+    "budgets": {
+      "lighthouseMin": 95,
+      "axeMaxViolations": 0,
+      "pipelineMaxSeconds": 180
+    },
+    "latest": {
+      "number": 11,
+      "commit": "eebfcc8",
+      "message": "Merge pull request #1 from avanegas95/perf/drop-react-islands\n\nReplace React islands with Astro components to pass the perf gate",
+      "branch": "",
+      "durationSeconds": 178,
+      "durationScope": "to-deploy",
+      "status": "pass",
+      "deployedAt": "2026-09-24T20:39:40Z",
+      "deployTarget": "Vercel",
+      "lighthouse": {
+        "formFactor": "mobile",
+        "runs": 3,
+        "performance": 97,
+        "accessibility": 100,
+        "bestPractices": 100,
+        "seo": 100
+      },
+      "axe": {
+        "standard": "WCAG 2.2 AA",
+        "violations": 0,
+        "statesScanned": 6
+      },
+      "playwright": {
+        "passed": 48,
+        "failed": 0,
+        "skipped": 0,
+        "total": 48,
+        "byBrowser": {
+          "chromium": 16,
+          "firefox": 16,
+          "webkit": 16
+        }
+      },
+      "stages": [
+        {
+          "name": "Install",
+          "status": "pass",
+          "durationSeconds": 17
+        },
+        {
+          "name": "Lint",
+          "status": "pass",
+          "durationSeconds": 12
+        },
+        {
+          "name": "Build",
+          "status": "pass",
+          "durationSeconds": 8
+        },
+        {
+          "name": "Playwright",
+          "status": "pass",
+          "durationSeconds": 52
+        },
+        {
+          "name": "axe",
+          "status": "pass",
+          "durationSeconds": 7
+        },
+        {
+          "name": "Lighthouse",
+          "status": "pass",
+          "durationSeconds": 34
+        },
+        {
+          "name": "Deploy",
+          "status": "pass",
+          "durationSeconds": null
+        }
+      ]
+    },
+    "runs": []
+  }
 }
