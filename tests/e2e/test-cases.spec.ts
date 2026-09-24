@@ -39,6 +39,7 @@ test.describe("expandable test case rows", () => {
 
   test("Enter and Space toggle a row; keyboard focus shows a visible outline", async ({
     page,
+    browserName,
   }) => {
     await page.goto("/#suites");
 
@@ -55,8 +56,13 @@ test.describe("expandable test case rows", () => {
     await toggle.press("Enter");
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
 
-    // The Space/Enter presses above focused the row from the keyboard, so
-    // :focus-visible applies in every engine without tabbing around.
+    // Firefox keeps mouse-focus modality after the click above until focus
+    // moves by keyboard, so step off and back on. WebKit on Linux won't Tab
+    // onto buttons, but its keyboard presses above already set :focus-visible.
+    if (browserName !== "webkit") {
+      await page.keyboard.press("Shift+Tab");
+      await page.keyboard.press("Tab");
+    }
     await expect(toggle).toBeFocused();
 
     const outlineWidth = await toggle.evaluate((element) => {
