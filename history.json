@@ -1,14 +1,94 @@
 {
   "runs": [
     {
-      "number": 6,
-      "commit": "f73b2fe",
-      "message": "Check focus outline in place instead of tabbing around the page\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
-      "durationSeconds": 12,
-      "status": "fail",
-      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/6",
-      "note": "Playwright: 47/48 passed (1 failed, 0 skipped). Blocked."
+      "number": 7,
+      "commit": "f694d26",
+      "message": "Pick keyboard focus strategy per engine in the outline test\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+      "durationSeconds": 22,
+      "status": "pass",
+      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/7"
     }
   ],
-  "deployed": null
+  "deployed": {
+    "generatedAt": "",
+    "actionsUrl": "https://github.com/avanegas95/test-report-portfolio/actions",
+    "budgets": {
+      "lighthouseMin": 95,
+      "axeMaxViolations": 0,
+      "pipelineMaxSeconds": 180
+    },
+    "latest": {
+      "number": 7,
+      "commit": "f694d26",
+      "message": "Pick keyboard focus strategy per engine in the outline test\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+      "branch": "",
+      "durationSeconds": 22,
+      "durationScope": "to-deploy",
+      "status": "pass",
+      "deployedAt": "",
+      "deployTarget": "Vercel",
+      "lighthouse": {
+        "formFactor": "mobile",
+        "runs": 3,
+        "performance": 97,
+        "accessibility": 100,
+        "bestPractices": 100,
+        "seo": 100
+      },
+      "axe": {
+        "standard": "WCAG 2.2 AA",
+        "violations": 0,
+        "statesScanned": 6
+      },
+      "playwright": {
+        "passed": 48,
+        "failed": 0,
+        "skipped": 0,
+        "total": 48,
+        "byBrowser": {
+          "chromium": 16,
+          "firefox": 16,
+          "webkit": 16
+        }
+      },
+      "stages": [
+        {
+          "name": "Install",
+          "status": "pass",
+          "durationSeconds": 22
+        },
+        {
+          "name": "Lint",
+          "status": "pass",
+          "durationSeconds": 12
+        },
+        {
+          "name": "Build",
+          "status": "pass",
+          "durationSeconds": 10
+        },
+        {
+          "name": "Playwright",
+          "status": "pass",
+          "durationSeconds": 27
+        },
+        {
+          "name": "axe",
+          "status": "pass",
+          "durationSeconds": 8
+        },
+        {
+          "name": "Lighthouse",
+          "status": "pass",
+          "durationSeconds": 37
+        },
+        {
+          "name": "Deploy",
+          "status": "pass",
+          "durationSeconds": null
+        }
+      ]
+    },
+    "runs": []
+  }
 }
