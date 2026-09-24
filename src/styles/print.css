@@ -1,0 +1,22 @@
+@media print {
+  .print-hide {
+    display: none !important;
+  }
+
+  [id^="story-"],
+  [id^="story-"][hidden] {
+    display: block !important;
+  }
+
+  .test-case-row {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .signoff-contact a[href^="http"]::after,
+  .signoff-contact a[href^="mailto:"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #636b78;
+  }
+}

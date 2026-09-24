@@ -1,0 +1,35 @@
+{
+  "id": "SN",
+  "company": "SharkNinja",
+  "title": "SQA Engineer I to II",
+  "start": "2019",
+  "end": "2023",
+  "chip": "neutral",
+  "order": 2,
+  "cases": [
+    {
+      "id": "SN-001",
+      "title": "Wrote manual test cases for cloud services and consumer mobile apps",
+      "area": "Test design",
+      "status": "pass"
+    },
+    {
+      "id": "SN-002",
+      "title": "Mentored junior engineers and contractors",
+      "area": "Mentorship",
+      "status": "pass"
+    },
+    {
+      "id": "SN-003",
+      "title": "Ran standups, defect triage and release coordination",
+      "area": "Release",
+      "status": "pass"
+    },
+    {
+      "id": "SN-004",
+      "title": "Promoted SQA Engineer I to II",
+      "area": "Career",
+      "status": "pass"
+    }
+  ]
+}

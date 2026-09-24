@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://avanegas.com/schemas/quality-report.json",
+  "title": "QualityReport",
+  "description": "Results of the site's own CI pipeline, rendered by § 04 Live Quality Report at build time. Produced by a collector script in CI. Status semantics: fail = a blocking gate broke and nothing shipped; warn = shipped but the pipeline exceeded its 180s budget; Lighthouse below 95 is always fail.",
+  "type": "object",
+  "required": ["generatedAt", "latest", "runs", "actionsUrl"],
+  "properties": {
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "actionsUrl": { "type": "string", "format": "uri" },
+    "latest": { "$ref": "#/$defs/run" },
+    "runs": {
+      "description": "Most recent runs first, including failures. Keep ~10.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/runSummary" },
+      "maxItems": 20
+    },
+    "budgets": {
+      "type": "object",
+      "properties": {
+        "lighthouseMin": { "type": "integer", "default": 95 },
+        "axeMaxViolations": { "type": "integer", "default": 0 },
+        "pipelineMaxSeconds": { "type": "integer", "default": 180 }
+      }
+    }
+  },
+  "$defs": {
+    "status": {
+      "enum": ["pass", "warn", "fail", "info"],
+      "description": "fail = blocking gate broke and nothing shipped; warn = shipped but pipeline exceeded budget; Lighthouse below 95 is always fail."
+    },
+    "runSummary": {
+      "type": "object",
+      "required": ["number", "commit", "message", "durationSeconds", "status"],
+      "properties": {
+        "number": { "type": "integer" },
+        "commit": { "type": "string", "description": "Short SHA" },
+        "message": { "type": "string", "description": "Commit subject" },
+        "note": {
+          "type": "string",
+          "description": "Optional human explanation, e.g. what a gate caught"
+        },
+        "durationSeconds": { "type": "number" },
+        "status": { "$ref": "#/$defs/status" },
+        "url": { "type": "string", "format": "uri" }
+      }
+    },
+    "run": {
+      "allOf": [{ "$ref": "#/$defs/runSummary" }],
+      "type": "object",
+      "required": [
+        "branch",
+        "deployedAt",
+        "lighthouse",
+        "axe",
+        "playwright",
+        "stages"
+      ],
+      "properties": {
+        "branch": { "type": "string" },
+        "durationScope": {
+          "enum": ["to-deploy", "total"],
+          "description": "Scope of durationSeconds for the latest run."
+        },
+        "deployedAt": { "type": "string", "format": "date-time" },
+        "deployTarget": { "type": "string", "examples": ["Vercel"] },
+        "lighthouse": {
+          "type": "object",
+          "required": ["performance", "accessibility", "bestPractices", "seo"],
+          "properties": {
+            "formFactor": { "enum": ["mobile", "desktop"] },
+            "runs": {
+              "type": "integer",
+              "description": "Number of runs the median is taken over"
+            },
+            "performance": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "accessibility": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "bestPractices": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "seo": { "type": "integer", "minimum": 0, "maximum": 100 }
+          }
+        },
+        "axe": {
+          "type": "object",
+          "required": ["violations", "statesScanned"],
+          "properties": {
+            "standard": { "type": "string", "examples": ["WCAG 2.2 AA"] },
+            "violations": { "type": "integer", "minimum": 0 },
+            "statesScanned": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "playwright": {
+          "type": "object",
+          "required": ["passed", "total"],
+          "properties": {
+            "passed": { "type": "integer" },
+            "failed": { "type": "integer" },
+            "skipped": { "type": "integer" },
+            "total": { "type": "integer" },
+            "byBrowser": {
+              "type": "object",
+              "additionalProperties": { "type": "integer" },
+              "examples": [{ "chromium": 16, "firefox": 16, "webkit": 16 }]
+            }
+          }
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "status", "durationSeconds"],
+            "properties": {
+              "name": { "type": "string" },
+              "status": { "$ref": "#/$defs/status" },
+              "durationSeconds": {
+                "type": ["number", "null"],
+                "description": "null for the in-flight Deploy stage on the latest run."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

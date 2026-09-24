@@ -13,7 +13,7 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lint": "node scripts/check-node.mjs && node scripts/check-glyphs.mjs && eslint . && prettier --check . && astro check",
+    "lint": "node scripts/check-node.mjs && node scripts/check-glyphs.mjs && node scripts/check-content.mjs && eslint . && prettier --check . && astro check",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
@@ -21,12 +21,15 @@
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/react": "^4.4.2",
+    "@astrojs/sitemap": "^3.7.4",
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.3.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "satori": "^0.33.5",
     "tailwindcss": "^4.3.0",
     "typescript": "^5.9.3"
   },

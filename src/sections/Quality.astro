@@ -6,24 +6,7 @@ import StatusBadge from "@components/primitives/StatusBadge.astro";
 import SampleDataNotice from "@components/quality/SampleDataNotice.astro";
 import QualityReport from "@components/quality/QualityReport.astro";
 import { formatReportUpdated } from "@/lib/format";
-import qualityReportData from "@/data/quality-report.sample.json";
-import type { Status } from "@/lib/status";
-
-const qualityReport = {
-  ...qualityReportData,
-  latest: {
-    ...qualityReportData.latest,
-    status: qualityReportData.latest.status as Status,
-    stages: qualityReportData.latest.stages.map((stage) => ({
-      ...stage,
-      status: stage.status as Status,
-    })),
-  },
-  runs: qualityReportData.runs.map((run) => ({
-    ...run,
-    status: run.status as Status,
-  })),
-};
+import { loadQualityReport } from "@/lib/quality";
 
 interface Props {
   section: {
@@ -34,6 +17,7 @@ interface Props {
 }
 
 const { section } = Astro.props;
+const { report: qualityReport, isSample } = loadQualityReport();
 const updatedLabel = formatReportUpdated(qualityReport.generatedAt);
 ---
 
@@ -51,7 +35,7 @@ const updatedLabel = formatReportUpdated(qualityReport.generatedAt);
       headingId="quality-heading"
     >
       <div slot="aside" class="flex flex-col items-start gap-3 sm:items-end">
-        <SampleDataNotice />
+        {isSample && <SampleDataNotice />}
         <div class="flex flex-wrap items-center gap-3">
           <StatusBadge status="info" label="LIVE" />
           <span class="font-mono text-xs text-text-2">
@@ -61,18 +45,6 @@ const updatedLabel = formatReportUpdated(qualityReport.generatedAt);
       </div>
     </SectionHeader>
 
-    <QualityReport
-      report={{
-        ...qualityReport,
-        latest: {
-          ...qualityReport.latest,
-          status: qualityReport.latest.status as import("@/lib/status").Status,
-        },
-        runs: qualityReport.runs.map((run) => ({
-          ...run,
-          status: run.status as import("@/lib/status").Status,
-        })),
-      }}
-    />
+    <QualityReport report={qualityReport} />
   </Container>
 </Section>

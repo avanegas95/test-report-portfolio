@@ -1,0 +1,69 @@
+{
+  "id": "BD",
+  "company": "Boston Dynamics",
+  "title": "Senior to Staff SQA Engineer",
+  "start": "2023",
+  "end": null,
+  "chip": "info",
+  "order": 1,
+  "cases": [
+    {
+      "id": "BD-001",
+      "title": "Led project QA across HIL rigs, Gazebo simulation and Appium Android app testing",
+      "area": "Leadership",
+      "status": "pass"
+    },
+    {
+      "id": "BD-002",
+      "title": "Integrated automated tests into CI/CD with stage-based reporting",
+      "area": "CI/CD",
+      "status": "pass"
+    },
+    {
+      "id": "BD-003",
+      "title": "Onboarded non-SQA engineers through structured QA training",
+      "area": "Enablement",
+      "status": "pass"
+    },
+    {
+      "id": "BD-004",
+      "title": "Built a Python SSH-based robot monitoring tool",
+      "area": "Tooling",
+      "status": "pass",
+      "defaultOpen": true,
+      "story": {
+        "precondition": "Robot health lived in scattered logs. Checking a unit meant opening an SSH session and already knowing where to look — tribal knowledge with a terminal prompt.",
+        "steps": [
+          "Wrote a Python tool that opens SSH sessions to robots under test.",
+          "Pulled metrics in real time and surfaced them in one readable view.",
+          "Handed it to the wider team, so anyone — not just SQA — can read a robot’s vitals."
+        ],
+        "expected": "Engineers see what a robot is doing while it’s doing it.",
+        "actual": "Matches expected. Far fewer “can you check the logs?” messages. [ADD IMPACT — e.g. issues caught earlier, hours saved]",
+        "terminal": [
+          { "cmd": "$ robot-monitor --watch" },
+          {
+            "line": "connect  unit-01 via ssh",
+            "result": "ok",
+            "status": "pass"
+          },
+          {
+            "line": "connect  unit-02 via ssh",
+            "result": "ok",
+            "status": "pass"
+          },
+          { "line": "stream   metrics", "result": "live", "status": "info" },
+          { "line": "threshold alerts", "result": "armed", "status": "info" }
+        ],
+        "tags": ["Python", "SSH", "Linux / Bash"],
+        "draft": true
+      }
+    },
+    {
+      "id": "BD-005",
+      "title": "Promoted Senior to Staff SQA Engineer",
+      "area": "Regression-free",
+      "status": "pass"
+    }
+  ]
+}

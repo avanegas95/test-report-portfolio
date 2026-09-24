@@ -1,0 +1,33 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Container from "@components/primitives/Container.astro";
+import StatusBadge from "@components/primitives/StatusBadge.astro";
+---
+
+<BaseLayout
+  title="Test not found — Anderson Vanegas"
+  description="The requested test case was not found in this report."
+  canonicalPath="/404"
+  includePersonJsonLd={false}
+>
+  <main
+    id="main"
+    class="flex min-h-screen items-center justify-center bg-paper py-24"
+  >
+    <Container class="flex max-w-lg flex-col items-start gap-6 text-left">
+      <StatusBadge status="neutral" label="404 · NOT RUN" />
+      <h1 class="text-h2-m font-semibold text-ink md:text-h2">
+        Test not found.
+      </h1>
+      <p class="text-body-lg text-text-2">
+        The page you requested is not part of this report.
+      </p>
+      <a
+        href="/#summary"
+        class="inline-flex h-12 items-center justify-center rounded-md border border-ink bg-ink px-[22px] text-[15px] font-medium text-paper no-underline"
+      >
+        Back to summary
+      </a>
+    </Container>
+  </main>
+</BaseLayout>

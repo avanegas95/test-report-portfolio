@@ -1,6 +1,8 @@
 ---
 import Chip from "@components/primitives/Chip.astro";
+import TestCaseRow from "./TestCaseRow";
 import TestCaseRowStatic from "./TestCaseRowStatic.astro";
+import TestCaseStory from "./TestCaseStory.astro";
 import { formatSuiteDates, formatSuitePassLabel } from "@/lib/format";
 import type { Suite } from "@/lib/types";
 
@@ -52,15 +54,26 @@ const chipStatus = suite.chip === "info" ? "info" : "neutral";
   </div>
 
   {
-    suite.cases.map((testCase) => (
-      <TestCaseRowStatic
-        id={testCase.id}
-        title={testCase.title}
-        area={testCase.area}
-        status={testCase.status}
-        story={testCase.story}
-        defaultOpen={testCase.defaultOpen}
-      />
-    ))
+    suite.cases.map((testCase) =>
+      testCase.story ? (
+        <TestCaseRow
+          client:visible
+          id={testCase.id}
+          title={testCase.title}
+          area={testCase.area}
+          status={testCase.status}
+          defaultOpen={testCase.defaultOpen ?? false}
+        >
+          <TestCaseStory story={testCase.story} caseId={testCase.id} />
+        </TestCaseRow>
+      ) : (
+        <TestCaseRowStatic
+          id={testCase.id}
+          title={testCase.title}
+          area={testCase.area}
+          status={testCase.status}
+        />
+      ),
+    )
   }
 </article>

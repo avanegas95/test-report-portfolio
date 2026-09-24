@@ -1,0 +1,125 @@
+{
+  "report": {
+    "subject": "Anderson Vanegas",
+    "location": "Boston, MA"
+  },
+  "hero": {
+    "eyebrow": "§ 01 — EXECUTIVE SUMMARY",
+    "title": "Anderson Vanegas",
+    "titleSuffix": "— Test Report {version}",
+    "verdict": "Release-ready SQA engineer. 6+ years, 0 critical escapes.",
+    "bio": "Staff SQA Engineer at Boston Dynamics, where I break robots on purpose so they don’t break by accident. Six years of manual rigor, now compiled into Python tooling, Appium suites and CI pipelines that report back before anyone has to ask.",
+    "ctas": [
+      {
+        "label": "Run the test suites",
+        "href": "#suites",
+        "variant": "primary"
+      },
+      {
+        "label": "File a request (contact)",
+        "href": "#signoff",
+        "variant": "secondary"
+      }
+    ]
+  },
+  "subjectCard": {
+    "badge": { "status": "info", "label": "OPEN TO TALK" },
+    "rows": [
+      { "key": "ROLE", "value": "Staff SQA Engineer" },
+      { "key": "CURRENT BUILD", "value": "Boston Dynamics", "note": "(2023–)" },
+      { "key": "PREV. BUILD", "value": "SharkNinja", "note": "(2019–2023)" },
+      {
+        "key": "EDUCATION",
+        "value": "B.S. Computer Engineering, Boston University"
+      },
+      {
+        "key": "TRAJECTORY",
+        "value": "Manual to automation, and not looking back"
+      }
+    ]
+  },
+  "metrics": [
+    { "kind": "static", "value": "6+", "label": "Years in QA" },
+    {
+      "kind": "computed",
+      "metric": "suiteCount",
+      "label": "Suites executed (companies)"
+    },
+    {
+      "kind": "computed",
+      "metric": "toolCount",
+      "label": "Tools in the matrix"
+    },
+    {
+      "kind": "computed",
+      "metric": "passRate",
+      "label": "Pass rate (we checked twice)",
+      "status": "pass"
+    }
+  ],
+  "suitesSection": {
+    "eyebrow": "§ 02 — TEST SUITES",
+    "title": "Work history, executed.",
+    "lede": "Each role is a suite. Each accomplishment is a test case. All of them ran in production, which is the only environment that counts."
+  },
+  "environmentSection": {
+    "eyebrow": "§ 03 — TEST ENVIRONMENT",
+    "title": "Tools in the matrix.",
+    "lede": "Everything configured, versioned and used in anger. No “familiar with” padding."
+  },
+  "tools": [
+    { "group": "AUTOMATION", "items": ["Python", "Appium", "Selenium"] },
+    { "group": "CI / CD", "items": ["Jenkins", "Buildkite"] },
+    {
+      "group": "TEST MANAGEMENT",
+      "items": ["Jira", "Zephyr", "X-Ray", "Confluence"]
+    },
+    { "group": "SYSTEMS", "items": ["Linux / Bash"] },
+    { "group": "WEB (THIS SITE)", "items": ["Astro", "React", "Tailwind"] }
+  ],
+  "testBeds": {
+    "group": "TEST BEDS",
+    "items": [
+      "HIL rigs",
+      "Gazebo simulation",
+      "Android devices",
+      "Actual robots"
+    ]
+  },
+  "qualitySection": {
+    "eyebrow": "§ 04 — LIVE QUALITY REPORT",
+    "title": "This site, tested like everything else.",
+    "lede": "Every deploy runs Lighthouse, axe and Playwright in CI. If a check goes red, it doesn’t ship. It would be awkward otherwise."
+  },
+  "signoff": {
+    "eyebrow": "§ 05 — SIGN-OFF",
+    "title": "Approved for release.",
+    "titleSuffix": "Pending your signature.",
+    "lede": "Hiring for QA, test automation or someone who asks “what happens if…” before it happens? Let’s talk.",
+    "approvals": [
+      { "key": "TESTED BY", "value": "Anderson Vanegas" },
+      {
+        "key": "APPROVED BY",
+        "value": "You, hopefully",
+        "placeholderStyle": true
+      },
+      { "key": "DATE", "value": "____-__-__", "placeholderStyle": true }
+    ],
+    "knownIssue": {
+      "id": "KI-01",
+      "status": "warn",
+      "label": "WON’T FIX",
+      "text": "Responds to “quick question” with a reproducible test case. Severity: low. Frequency: always."
+    }
+  },
+  "contact": {
+    "email": "avanegas95@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/avanegas95/",
+    "github": "https://github.com/avanegas95",
+    "resumePdf": "/Anderson_Vanegas_Resume.pdf"
+  },
+  "footer": {
+    "left": "© {year} Anderson Vanegas · Boston, MA",
+    "right": "Built with Astro, React & Tailwind · — END OF REPORT —"
+  }
+}

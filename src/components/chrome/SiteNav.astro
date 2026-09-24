@@ -1,5 +1,6 @@
 ---
 import Icon from "@components/primitives/Icon.astro";
+import MobileMenu from "./MobileMenu";
 
 interface SectionLink {
   id: string;
@@ -16,11 +17,11 @@ interface Props {
 const { version, sections, resumePdf } = Astro.props;
 
 const downloadClasses =
-  "hidden h-10 items-center justify-center gap-2 rounded-md border border-border-control bg-paper px-4 text-sm font-medium text-ink no-underline transition-colors hover:border-ink hover:text-ink sm:inline-flex";
+  "print-hide hidden h-10 items-center justify-center gap-2 rounded-md border border-border-control bg-paper px-4 text-sm font-medium text-ink no-underline transition-colors hover:border-ink hover:text-ink sm:inline-flex";
 ---
 
 <header
-  class="sticky top-0 z-50 border-b border-rule bg-paper/95 backdrop-blur-sm"
+  class="print-hide sticky top-0 z-50 border-b border-rule bg-paper/95 backdrop-blur-sm"
 >
   <div
     class="mx-auto flex h-[60px] max-w-report items-center justify-between gap-4 px-4 sm:px-5 md:h-[72px] lg:px-8"
@@ -54,12 +55,7 @@ const downloadClasses =
       }
     </nav>
 
-    <nav
-      aria-label="Mobile report sections"
-      class="flex items-center gap-3 md:hidden"
-    >
-      <a href="#summary" class="text-sm text-text-2 no-underline">Summary</a>
-    </nav>
+    <MobileMenu client:media="(max-width: 767px)" sections={sections} />
 
     <a href={resumePdf} download class={downloadClasses}>
       <Icon name="download" class="size-4" />

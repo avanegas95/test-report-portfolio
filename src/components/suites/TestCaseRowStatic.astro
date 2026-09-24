@@ -1,103 +1,32 @@
 ---
 import StatusBadge from "@components/primitives/StatusBadge.astro";
-import Icon from "@components/primitives/Icon.astro";
-import TestCaseStory from "./TestCaseStory.astro";
 import type { Status } from "@/lib/status";
-
-interface Story {
-  precondition: string;
-  steps: string[];
-  expected: string;
-  actual: string;
-  terminal?: Array<
-    { cmd: string } | { line: string; result: string; status: Status }
-  >;
-  tags?: string[];
-}
 
 interface Props {
   id: string;
   title: string;
   area: string;
   status: Status;
-  story?: Story;
-  defaultOpen?: boolean;
 }
 
-const { id, title, area, status, story, defaultOpen = false } = Astro.props;
-
-const hasStory = Boolean(story);
-const isOpen = hasStory && defaultOpen;
-const headerId = `${id}-header`;
+const { id, title, area, status } = Astro.props;
 
 const rowGrid =
   "grid grid-cols-1 gap-2 px-5 py-4 md:grid-cols-[112px_minmax(0,1fr)_150px_96px_24px] md:items-center md:gap-4 md:px-7 md:py-0 md:min-h-[60px]";
 ---
 
-<div class="border-t border-rule-soft">
-  {
-    hasStory ? (
-      <>
-        <div
-          id={headerId}
-          class:list={[
-            rowGrid,
-            isOpen
-              ? "bg-info-surface shadow-[inset_3px_0_0_0_var(--color-info-dot)]"
-              : "bg-paper",
-          ]}
-        >
-          <span
-            class:list={[
-              "font-mono text-[13px]",
-              isOpen ? "font-semibold text-info" : "text-muted",
-            ]}
-          >
-            {id}
-          </span>
-          <span
-            class:list={[
-              "text-row-title-m md:text-row-title",
-              isOpen ? "font-semibold" : "font-medium",
-            ]}
-          >
-            <span class="font-mono text-xs text-muted md:hidden">
-              {id} · {area} ·{" "}
-            </span>
-            {title}
-          </span>
-          <span class="hidden font-mono text-xs text-text-2 md:block">
-            {area}
-          </span>
-          <div class="justify-self-start">
-            <StatusBadge status={status} />
-          </div>
-          <span class="hidden justify-self-end md:block">
-            {isOpen ? (
-              <Icon name="chevron" class="size-[18px] text-info" />
-            ) : (
-              <Icon name="chevron" class="size-[18px] -rotate-90 text-faint" />
-            )}
-          </span>
-        </div>
-        {isOpen && story && <TestCaseStory story={story} caseId={id} />}
-      </>
-    ) : (
-      <div class={rowGrid}>
-        <span class="font-mono text-[13px] text-muted">{id}</span>
-        <span class="text-row-title-m font-medium md:text-row-title">
-          <span class="font-mono text-xs text-muted md:hidden">
-            {id} · {area} ·{" "}
-          </span>
-          {title}
-        </span>
-        <span class="hidden font-mono text-xs text-text-2 md:block">
-          {area}
-        </span>
-        <div class="justify-self-start">
-          <StatusBadge status={status} />
-        </div>
-      </div>
-    )
-  }
+<div class="test-case-row border-t border-rule-soft">
+  <div class={rowGrid}>
+    <span class="font-mono text-[13px] text-muted">{id}</span>
+    <span class="text-row-title-m font-medium md:text-row-title">
+      <span class="font-mono text-xs text-muted md:hidden">
+        {id} · {area} ·{" "}
+      </span>
+      {title}
+    </span>
+    <span class="hidden font-mono text-xs text-text-2 md:block">{area}</span>
+    <div class="justify-self-start">
+      <StatusBadge status={status} />
+    </div>
+  </div>
 </div>

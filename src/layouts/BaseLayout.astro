@@ -10,15 +10,51 @@ import "@fontsource/ibm-plex-mono/latin-600.css";
 import sans600 from "@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-600-normal.woff2?url";
 import mono500 from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2?url";
 
+import { getVersion } from "@/lib/version";
+
 interface Props {
   title?: string;
   description?: string;
+  canonicalPath?: string;
+  includePersonJsonLd?: boolean;
 }
 
+const siteUrl = Astro.site ?? new URL("https://avanegas.com");
+const version = getVersion();
+
 const {
-  title = "Anderson Vanegas — The Test Report",
-  description = "Anderson Vanegas — Staff SQA Engineer portfolio as a test report.",
+  title = `Anderson Vanegas — Test Report ${version}`,
+  description = "Staff SQA Engineer portfolio presented as a live test report — suites, tooling, quality gates, and sign-off.",
+  canonicalPath = Astro.url.pathname,
+  includePersonJsonLd = true,
 } = Astro.props;
+
+const canonicalUrl = new URL(canonicalPath, siteUrl).href;
+const ogImageUrl = new URL("/og.png", siteUrl).href;
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Anderson Vanegas",
+  jobTitle: "Staff SQA Engineer",
+  worksFor: {
+    "@type": "Organization",
+    name: "Boston Dynamics",
+  },
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: "Boston University",
+  },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Boston",
+    addressRegion: "MA",
+  },
+  sameAs: [
+    "https://www.linkedin.com/in/avanegas95/",
+    "https://github.com/avanegas95",
+  ],
+};
 ---
 
 <!doctype html>
@@ -27,6 +63,18 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link
       rel="preload"
@@ -43,6 +91,22 @@ const {
       crossorigin="anonymous"
     />
     <title>{title}</title>
+    {
+      includePersonJsonLd && (
+        <script
+          type="application/ld+json"
+          set:html={JSON.stringify(personJsonLd)}
+        />
+      )
+    }
+    <noscript>
+      <style>
+        [id^="story-"],
+        [id^="story-"][hidden] {
+          display: block !important;
+        }
+      </style>
+    </noscript>
   </head>
   <body class="min-h-screen bg-paper text-ink antialiased">
     <slot />
@@ -51,4 +115,5 @@ const {
 
 <style is:global>
   @import "../styles/global.css";
+  @import "../styles/print.css";
 </style>

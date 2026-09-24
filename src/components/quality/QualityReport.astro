@@ -8,64 +8,19 @@ import {
   formatDeployTime,
   formatDuration,
 } from "@/lib/format";
+import type { QualityReport } from "@/lib/quality";
 import type { Status } from "@/lib/status";
 
-interface QualityReportData {
-  generatedAt: string;
-  actionsUrl: string;
-  budgets: {
-    lighthouseMin: number;
-    pipelineMaxSeconds: number;
-  };
-  latest: {
-    number: number;
-    commit: string;
-    branch: string;
-    durationSeconds: number;
-    status: Status;
-    deployedAt: string;
-    deployTarget: string;
-    lighthouse: {
-      performance: number;
-      accessibility: number;
-      bestPractices: number;
-      seo: number;
-      runs: number;
-      formFactor: string;
-    };
-    axe: {
-      violations: number;
-      standard: string;
-      statesScanned: number;
-    };
-    playwright: {
-      passed: number;
-      total: number;
-      byBrowser: Record<string, number>;
-    };
-    stages: Array<{
-      name: string;
-      status: Status;
-      durationSeconds: number | null;
-    }>;
-  };
-  runs: Array<{
-    number: number;
-    commit: string;
-    message: string;
-    durationSeconds: number;
-    status: Status;
-    note?: string;
-    url?: string;
-  }>;
-}
-
 interface Props {
-  report: QualityReportData;
+  report: QualityReport;
 }
 
 const { report } = Astro.props;
-const { latest, budgets } = report;
+const { latest } = report;
+const budgets = report.budgets ?? {
+  lighthouseMin: 95,
+  pipelineMaxSeconds: 180,
+};
 const deployTime = formatDeployTime(latest.deployedAt);
 const deployDate = formatDeployDate(latest.deployedAt);
 const pipelineStatus: Status =
@@ -76,7 +31,7 @@ const lighthousePass = [
   latest.lighthouse.bestPractices,
   latest.lighthouse.seo,
 ].every((score) => score >= budgets.lighthouseMin);
-const browserSummary = Object.entries(latest.playwright.byBrowser)
+const browserSummary = Object.entries(latest.playwright.byBrowser ?? {})
   .map(
     ([browser, count]) =>
       `${browser[0].toUpperCase()}${browser.slice(1)} ${count}`,
@@ -95,7 +50,8 @@ const browserSummary = Object.entries(latest.playwright.byBrowser)
       <span slot="title">
         Lighthouse
         <span class="font-mono text-xs font-normal text-muted">
-          · {latest.lighthouse.formFactor} · median of {latest.lighthouse.runs} runs
+          · {latest.lighthouse.formFactor ?? "mobile"} · median of{" "}
+          {latest.lighthouse.runs ?? 3} runs
         </span>
       </span>
       <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -122,7 +78,8 @@ const browserSummary = Object.entries(latest.playwright.byBrowser)
         {latest.axe.violations}
       </span>
       <span class="font-mono text-xs text-muted">
-        axe-core · {latest.axe.standard} · {latest.axe.statesScanned} states scanned
+        axe-core · {latest.axe.standard ?? "WCAG 2.2 AA"} ·{" "}
+        {latest.axe.statesScanned} states scanned
       </span>
     </QualityTile>
 
@@ -142,7 +99,7 @@ const browserSummary = Object.entries(latest.playwright.byBrowser)
       </div>
       <div class="flex h-2 gap-0.5">
         {
-          Object.keys(latest.playwright.byBrowser).map(() => (
+          Object.keys(latest.playwright.byBrowser ?? {}).map(() => (
             <span class="flex-1 rounded-sm bg-pass-dot" />
           ))
         }
@@ -158,7 +115,8 @@ const browserSummary = Object.entries(latest.playwright.byBrowser)
         <span class="font-mono text-xl text-muted">{deployTime.zone}</span>
       </div>
       <span class="font-mono text-xs text-muted">
-        {deployDate} · {latest.branch} @ {latest.commit} · {latest.deployTarget}
+        {deployDate} · {latest.branch} @ {latest.commit} ·{" "}
+        {latest.deployTarget ?? "production"}
       </span>
     </QualityTile>
 
