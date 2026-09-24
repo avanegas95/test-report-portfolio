@@ -1,12 +1,12 @@
 {
   "runs": [
     {
-      "number": 3,
-      "commit": "0f5b62a",
-      "message": "Fix CI first-run deadlock, Firefox launch, and history git access\n\n- Run e2e/axe against the same QUALITY_REPORT Build A used.\n- Set HOME=/root so Firefox launches inside the Playwright container.\n- Render an empty state when there are no previous runs, and only assert\n  run rows/stages the report actually contains; the latest run is never\n  in its own history, so the old assertion could never pass.\n- Mark the workspace as a git safe.directory before recording history.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
-      "durationSeconds": 16,
+      "number": 4,
+      "commit": "a1a2ecd",
+      "message": "Make focus-outline test reach the row via keyboard in all engines\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+      "durationSeconds": 20,
       "status": "fail",
-      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/3",
+      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/4",
       "note": "Playwright: 47/48 passed (1 failed, 0 skipped). Blocked."
     }
   ],
