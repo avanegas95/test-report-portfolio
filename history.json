@@ -1,16 +1,16 @@
 {
   "runs": [
     {
-      "number": 11,
+      "number": 12,
       "commit": "eebfcc8",
-      "message": "Merge pull request #1 from avanegas95/perf/drop-react-islands\n\nReplace React islands with Astro components to pass the perf gate",
-      "durationSeconds": 181,
+      "message": "scheduled: weekly re-verification",
+      "durationSeconds": 16,
       "status": "pass",
-      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/11"
+      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/12"
     }
   ],
   "deployed": {
-    "generatedAt": "2026-09-24T20:39:40Z",
+    "generatedAt": "2026-09-28T19:56:14Z",
     "actionsUrl": "https://github.com/avanegas95/test-report-portfolio/actions",
     "budgets": {
       "lighthouseMin": 95,
@@ -18,14 +18,14 @@
       "pipelineMaxSeconds": 180
     },
     "latest": {
-      "number": 11,
+      "number": 12,
       "commit": "eebfcc8",
-      "message": "Merge pull request #1 from avanegas95/perf/drop-react-islands\n\nReplace React islands with Astro components to pass the perf gate",
+      "message": "scheduled: weekly re-verification",
       "branch": "",
-      "durationSeconds": 178,
+      "durationSeconds": 16,
       "durationScope": "to-deploy",
       "status": "pass",
-      "deployedAt": "2026-09-24T20:39:40Z",
+      "deployedAt": "2026-09-28T19:56:14Z",
       "deployTarget": "Vercel",
       "lighthouse": {
         "formFactor": "mobile",
@@ -55,7 +55,7 @@
         {
           "name": "Install",
           "status": "pass",
-          "durationSeconds": 17
+          "durationSeconds": 16
         },
         {
           "name": "Lint",
@@ -70,12 +70,12 @@
         {
           "name": "Playwright",
           "status": "pass",
-          "durationSeconds": 52
+          "durationSeconds": 24
         },
         {
           "name": "axe",
           "status": "pass",
-          "durationSeconds": 7
+          "durationSeconds": 6
         },
         {
           "name": "Lighthouse",
