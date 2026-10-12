@@ -1,94 +1,14 @@
 {
   "runs": [
     {
-      "number": 12,
+      "number": 14,
       "commit": "eebfcc8",
       "message": "scheduled: weekly re-verification",
-      "durationSeconds": 16,
-      "status": "pass",
-      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/12"
+      "durationSeconds": 13,
+      "status": "fail",
+      "url": "https://github.com/avanegas95/test-report-portfolio/actions/runs/14",
+      "note": "Playwright: 42/48 passed (6 failed, 0 skipped). Blocked."
     }
   ],
-  "deployed": {
-    "generatedAt": "2026-09-28T19:56:14Z",
-    "actionsUrl": "https://github.com/avanegas95/test-report-portfolio/actions",
-    "budgets": {
-      "lighthouseMin": 95,
-      "axeMaxViolations": 0,
-      "pipelineMaxSeconds": 180
-    },
-    "latest": {
-      "number": 12,
-      "commit": "eebfcc8",
-      "message": "scheduled: weekly re-verification",
-      "branch": "",
-      "durationSeconds": 16,
-      "durationScope": "to-deploy",
-      "status": "pass",
-      "deployedAt": "2026-09-28T19:56:14Z",
-      "deployTarget": "Vercel",
-      "lighthouse": {
-        "formFactor": "mobile",
-        "runs": 3,
-        "performance": 97,
-        "accessibility": 100,
-        "bestPractices": 100,
-        "seo": 100
-      },
-      "axe": {
-        "standard": "WCAG 2.2 AA",
-        "violations": 0,
-        "statesScanned": 6
-      },
-      "playwright": {
-        "passed": 48,
-        "failed": 0,
-        "skipped": 0,
-        "total": 48,
-        "byBrowser": {
-          "chromium": 16,
-          "firefox": 16,
-          "webkit": 16
-        }
-      },
-      "stages": [
-        {
-          "name": "Install",
-          "status": "pass",
-          "durationSeconds": 16
-        },
-        {
-          "name": "Lint",
-          "status": "pass",
-          "durationSeconds": 12
-        },
-        {
-          "name": "Build",
-          "status": "pass",
-          "durationSeconds": 8
-        },
-        {
-          "name": "Playwright",
-          "status": "pass",
-          "durationSeconds": 24
-        },
-        {
-          "name": "axe",
-          "status": "pass",
-          "durationSeconds": 6
-        },
-        {
-          "name": "Lighthouse",
-          "status": "pass",
-          "durationSeconds": 34
-        },
-        {
-          "name": "Deploy",
-          "status": "pass",
-          "durationSeconds": null
-        }
-      ]
-    },
-    "runs": []
-  }
+  "deployed": null
 }
